@@ -1,98 +1,140 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import React from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { AppColors } from "@/constants/colors";
+import { typography } from "@/constants/typography";
+import { StreakCounter } from "@/components/dashboard/StreakCounter";
+import { TodayStatus } from "@/components/dashboard/TodayStatus";
+import { WeeklyProgress } from "@/components/dashboard/WeeklyProgress";
+import { QuickStats } from "@/components/dashboard/QuickStats";
+import {
+  MOCK_DEFAULT,
+  MOCK_NEW_USER,
+  MOCK_MILESTONE,
+  MOCK_STREAK_AT_RISK,
+  MOCK_STREAK_FROZEN,
+  MOCK_ALL_GOALS_COMPLETE,
+  MOCK_SYNCING,
+  MOCK_STREAK_LAPSED,
+} from "@/lib/mock-data";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Hello World!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it now!</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const theme = isDark ? AppColors.dark : AppColors.light;
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const data = MOCK_STREAK_LAPSED;
+  const isNewUser = data.streak.state === "new";
+
+  return (
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
+      <StatusBar
+        barStyle={isDark ? "light-content" : "dark-content"}
+        backgroundColor={theme.bg}
+      />
+
+      <View style={[styles.header, { borderBottomColor: theme.border }]}>
+        <View style={styles.headerLeft}>
+          <Ionicons name="flame" size={22} color={AppColors.streakActive} />
+          <Text style={[styles.headerTitle, { color: theme.text }]}>
+            CreatorLog
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.headerRight}
+          hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+        >
+          <Ionicons
+            name="settings-outline"
+            size={22}
+            color={theme.textSecondary}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <StreakCounter streak={data.streak} />
+
+        <TodayStatus
+          todayStatus={data.todayStatus}
+          allGoalsCompleteToday={data.allGoalsCompleteToday}
+        />
+
+        <WeeklyProgress weeklyProgress={data.weeklyProgress} />
+
+        <QuickStats
+          postsThisWeek={data.postsThisWeek}
+          postsThisMonth={data.postsThisMonth}
+          isNewUser={isNewUser}
+        />
+      </ScrollView>
+
+      <TouchableOpacity style={styles.fab} activeOpacity={0.85}>
+        <Ionicons name="add" size={30} color="#FFFFFF" />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  safeArea: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  headerTitle: {
+    fontSize: typography.lg,
+    fontWeight: "700",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  headerRight: {
+    padding: 2,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: 20,
+    paddingBottom: 100,
+    gap: 20,
+  },
+  fab: {
+    position: "absolute",
+    right: 20,
+    bottom: 88,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: AppColors.primary,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: AppColors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });
