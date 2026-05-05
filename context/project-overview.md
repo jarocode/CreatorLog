@@ -27,11 +27,11 @@ Content creators know that consistency is the single biggest driver of algorithm
 
 **Why this is a technical opportunity:**
 
-| Platform  | Algorithm Behavior                                                                 |
-|-----------|------------------------------------------------------------------------------------|
-| TikTok    | Requires ~3 videos/week minimum for growth. Penalizes long gaps between posts.     |
-| LinkedIn  | Tracks your baseline engagement rate. Extended inactivity suppresses future posts.  |
-| YouTube   | Rewards regular upload schedules with improved recommendation placement.            |
+| Platform | Algorithm Behavior                                                                 |
+| -------- | ---------------------------------------------------------------------------------- |
+| TikTok   | Requires ~3 videos/week minimum for growth. Penalizes long gaps between posts.     |
+| LinkedIn | Tracks your baseline engagement rate. Extended inactivity suppresses future posts. |
+| YouTube  | Rewards regular upload schedules with improved recommendation placement.           |
 
 No platform provides a unified cross-platform consistency view. Each has siloed analytics. CreatorLog fills that gap with a mobile-first habit tracker that uses streak mechanics, push notifications, and lightweight analytics to keep creators accountable.
 
@@ -41,25 +41,25 @@ No platform provides a unified cross-platform consistency view. Each has siloed 
 
 ### Primary: The Aspiring Full-Time Creator
 
-| Attribute          | Detail                                                              |
-|--------------------|---------------------------------------------------------------------|
-| Age                | 22–35                                                               |
-| Active platforms   | 2–3 (typically TikTok + YouTube, or LinkedIn + TikTok)              |
-| Posting target     | 3–5x/week per platform; currently achieves 1–2x inconsistently     |
-| Content income     | $0–$2,000/month (growing toward full-time)                         |
-| Device             | Primarily mobile for consuming and posting content                  |
-| Willingness to pay | $4–8/month                                                         |
+| Attribute          | Detail                                                         |
+| ------------------ | -------------------------------------------------------------- |
+| Age                | 22–35                                                          |
+| Active platforms   | 2–3 (typically TikTok + YouTube, or LinkedIn + TikTok)         |
+| Posting target     | 3–5x/week per platform; currently achieves 1–2x inconsistently |
+| Content income     | $0–$2,000/month (growing toward full-time)                     |
+| Device             | Primarily mobile for consuming and posting content             |
+| Willingness to pay | $4–8/month                                                     |
 
 ### Secondary: The Side-Hustle Creator
 
-| Attribute          | Detail                                                              |
-|--------------------|---------------------------------------------------------------------|
-| Age                | 25–40                                                               |
-| Active platforms   | Primarily LinkedIn, occasionally TikTok or YouTube                  |
-| Posting target     | 3–5x/week on LinkedIn                                              |
-| Content income     | $0 direct; content drives consulting leads or job opportunities     |
-| Device             | Phone for quick logging, desktop for writing                        |
-| Willingness to pay | $3–5/month                                                         |
+| Attribute          | Detail                                                          |
+| ------------------ | --------------------------------------------------------------- |
+| Age                | 25–40                                                           |
+| Active platforms   | Primarily LinkedIn, occasionally TikTok or YouTube              |
+| Posting target     | 3–5x/week on LinkedIn                                           |
+| Content income     | $0 direct; content drives consulting leads or job opportunities |
+| Device             | Phone for quick logging, desktop for writing                    |
+| Willingness to pay | $3–5/month                                                      |
 
 ### Anti-Personas (Excluded)
 
@@ -107,22 +107,22 @@ Platform-specific content types rendered dynamically in the log form:
 ```typescript
 const PLATFORM_CONTENT_TYPES: Record<Platform, ContentType[]> = {
   linkedin: [
-    { id: 'text',      label: 'Text Post',  icon: 'FileText'     },
-    { id: 'carousel',  label: 'Carousel',   icon: 'LayoutGrid'   },
-    { id: 'video',     label: 'Video',      icon: 'Video'        },
-    { id: 'article',   label: 'Article',    icon: 'BookOpen'     },
-    { id: 'poll',      label: 'Poll',       icon: 'BarChart3'    },
+    { id: "text", label: "Text Post", icon: "FileText" },
+    { id: "carousel", label: "Carousel", icon: "LayoutGrid" },
+    { id: "video", label: "Video", icon: "Video" },
+    { id: "article", label: "Article", icon: "BookOpen" },
+    { id: "poll", label: "Poll", icon: "BarChart3" },
   ],
   tiktok: [
-    { id: 'video',     label: 'Video',      icon: 'Video'        },
-    { id: 'live',      label: 'LIVE',       icon: 'Radio'        },
-    { id: 'story',     label: 'Story',      icon: 'Circle'       },
+    { id: "video", label: "Video", icon: "Video" },
+    { id: "live", label: "LIVE", icon: "Radio" },
+    { id: "story", label: "Story", icon: "Circle" },
   ],
   youtube: [
-    { id: 'longform',  label: 'Long-form',  icon: 'Film'         },
-    { id: 'short',     label: 'Short',      icon: 'Smartphone'   },
-    { id: 'community', label: 'Community',  icon: 'MessageSquare'},
-    { id: 'live',      label: 'LIVE',       icon: 'Radio'        },
+    { id: "longform", label: "Long-form", icon: "Film" },
+    { id: "short", label: "Short", icon: "Smartphone" },
+    { id: "community", label: "Community", icon: "MessageSquare" },
+    { id: "live", label: "LIVE", icon: "Radio" },
   ],
 };
 ```
@@ -131,15 +131,15 @@ const PLATFORM_CONTENT_TYPES: Record<Platform, ContentType[]> = {
 
 ### 3.3 Features Excluded from MVP (v2.0+)
 
-| Feature                          | Reason for Deferral                                         |
-|----------------------------------|-------------------------------------------------------------|
-| AI-powered insights              | Requires sufficient data accumulation (~3 months)           |
-| Content idea suggestions         | Scope creep; not core to the consistency problem            |
-| Platform API integrations        | OAuth complexity, rate limits, maintenance burden           |
-| Social/community features        | Leaderboards, accountability partners — needs user base     |
-| Hashtag or trend tracking        | Separate product concern (TrendScout)                       |
-| Team/collaboration features      | B2B pivot, out of scope for solo creator MVP                |
-| Desktop/web version              | Mobile-first; web companion is a v2 consideration           |
+| Feature                     | Reason for Deferral                                     |
+| --------------------------- | ------------------------------------------------------- |
+| AI-powered insights         | Requires sufficient data accumulation (~3 months)       |
+| Content idea suggestions    | Scope creep; not core to the consistency problem        |
+| Platform API integrations   | OAuth complexity, rate limits, maintenance burden       |
+| Social/community features   | Leaderboards, accountability partners — needs user base |
+| Hashtag or trend tracking   | Separate product concern (TrendScout)                   |
+| Team/collaboration features | B2B pivot, out of scope for solo creator MVP            |
+| Desktop/web version         | Mobile-first; web companion is a v2 consideration       |
 
 ---
 
@@ -213,12 +213,12 @@ const PLATFORM_CONTENT_TYPES: Record<Platform, ContentType[]> = {
 
 **Supported auth providers:**
 
-| Provider        | Required? | Notes                                          |
-|-----------------|-----------|------------------------------------------------|
-| Email/Password  | Yes       | Primary auth method                            |
-| Magic Link      | Yes       | Passwordless alternative via email              |
-| Apple Sign In   | Yes       | **Required by App Store** if any SSO is offered |
-| Google Sign In  | Yes       | Recommended for Play Store, covers most users   |
+| Provider       | Required? | Notes                                           |
+| -------------- | --------- | ----------------------------------------------- |
+| Email/Password | Yes       | Primary auth method                             |
+| Magic Link     | Yes       | Passwordless alternative via email              |
+| Apple Sign In  | Yes       | **Required by App Store** if any SSO is offered |
+| Google Sign In | Yes       | Recommended for Play Store, covers most users   |
 
 **Implementation:** Use `@supabase/supabase-js` with `@react-native-google-signin/google-signin` and `expo-apple-authentication`.
 
@@ -262,56 +262,56 @@ const PLATFORM_CONTENT_TYPES: Record<Platform, ContentType[]> = {
 
 ### 5.1 Frontend
 
-| Layer              | Package                          | Version  | Purpose                                            |
-|--------------------|----------------------------------|----------|----------------------------------------------------|
-| Framework          | `react-native` + `expo`          | SDK 52+  | Cross-platform mobile runtime                      |
-| Navigation         | `expo-router`                    | v4+      | File-based routing, deep linking                   |
-| State Management   | `zustand`                        | ^5.0     | Lightweight global state, no boilerplate            |
-| Local Storage      | `react-native-mmkv`             | ^3.0     | 30x faster than AsyncStorage, offline caching       |
-| Charts             | `react-native-gifted-charts`     | ^1.4     | Bar charts, line charts for stats screen            |
-| Calendar           | `react-native-calendars`         | ^1.1306  | Monthly calendar grid with custom day markers       |
-| Notifications      | `expo-notifications`             | ^0.28    | Local + push notifications                          |
-| Animations         | `react-native-reanimated`        | ^3.16    | Streak flames, confetti, progress bar animations    |
-| Haptics            | `expo-haptics`                   | ^13.0    | Success vibration on post log                       |
-| Icons              | `lucide-react-native`            | ^0.460   | Consistent icon set across all screens              |
-| Subscriptions      | `react-native-purchases`         | ^8.0     | RevenueCat SDK for in-app subscriptions             |
-| Date handling      | `date-fns`                       | ^4.1     | Timezone-aware date math for streak calculations    |
-| Forms              | `react-hook-form`                | ^7.54    | Performant form handling for log-post screen        |
+| Layer            | Package                      | Version | Purpose                                          |
+| ---------------- | ---------------------------- | ------- | ------------------------------------------------ |
+| Framework        | `react-native` + `expo`      | SDK 52+ | Cross-platform mobile runtime                    |
+| Navigation       | `expo-router`                | v4+     | File-based routing, deep linking                 |
+| State Management | `zustand`                    | ^5.0    | Lightweight global state, no boilerplate         |
+| Local Storage    | `react-native-mmkv`          | ^3.0    | 30x faster than AsyncStorage, offline caching    |
+| Charts           | `react-native-gifted-charts` | ^1.4    | Bar charts, line charts for stats screen         |
+| Calendar         | `react-native-calendars`     | ^1.1306 | Monthly calendar grid with custom day markers    |
+| Notifications    | `expo-notifications`         | ^0.28   | Local + push notifications                       |
+| Animations       | `react-native-reanimated`    | ^3.16   | Streak flames, confetti, progress bar animations |
+| Haptics          | `expo-haptics`               | ^13.0   | Success vibration on post log                    |
+| Icons            | `lucide-react-native`        | ^0.460  | Consistent icon set across all screens           |
+| Subscriptions    | `react-native-purchases`     | ^8.0    | RevenueCat SDK for in-app subscriptions          |
+| Date handling    | `date-fns`                   | ^4.1    | Timezone-aware date math for streak calculations |
+| Forms            | `react-hook-form`            | ^7.54   | Performant form handling for log-post screen     |
 
 ### 5.2 Backend (Supabase)
 
-| Layer              | Service                          | Purpose                                                   |
-|--------------------|----------------------------------|-----------------------------------------------------------|
-| Auth               | Supabase Auth                    | Email/password, magic link, Apple SSO, Google SSO         |
-| Database           | Supabase Postgres                | Relational data with Row Level Security (RLS)             |
-| Serverless Logic   | Supabase Edge Functions (Deno)   | Streak checks, notification dispatch, weekly summaries    |
-| Scheduled Jobs     | `pg_cron` extension              | Nightly streak recalculation, weekly digest trigger        |
-| Realtime           | Not needed at MVP                | No collaborative or live features                         |
-| Storage            | Not needed at MVP                | No file/image uploads                                     |
+| Layer            | Service                        | Purpose                                                |
+| ---------------- | ------------------------------ | ------------------------------------------------------ |
+| Auth             | Supabase Auth                  | Email/password, magic link, Apple SSO, Google SSO      |
+| Database         | Supabase Postgres              | Relational data with Row Level Security (RLS)          |
+| Serverless Logic | Supabase Edge Functions (Deno) | Streak checks, notification dispatch, weekly summaries |
+| Scheduled Jobs   | `pg_cron` extension            | Nightly streak recalculation, weekly digest trigger    |
+| Realtime         | Not needed at MVP              | No collaborative or live features                      |
+| Storage          | Not needed at MVP              | No file/image uploads                                  |
 
 ### 5.3 Infrastructure & DevOps
 
-| Layer              | Tool                             | Purpose                                                   |
-|--------------------|----------------------------------|-----------------------------------------------------------|
-| Builds             | EAS Build                        | Cloud builds for iOS (.ipa) and Android (.aab)            |
-| OTA Updates        | EAS Update                       | Push JS bundle updates without app store review           |
-| Error Tracking     | Sentry (`sentry-expo`)           | Crash reports, breadcrumbs, performance monitoring         |
-| Product Analytics  | PostHog (React Native SDK)       | Feature usage, onboarding funnels, retention cohorts      |
-| CI/CD              | GitHub Actions → EAS Build       | Auto-build on merge to `main`                             |
-| Source Control     | GitHub                           | Monorepo with conventional commits                        |
+| Layer             | Tool                       | Purpose                                              |
+| ----------------- | -------------------------- | ---------------------------------------------------- |
+| Builds            | EAS Build                  | Cloud builds for iOS (.ipa) and Android (.aab)       |
+| OTA Updates       | EAS Update                 | Push JS bundle updates without app store review      |
+| Error Tracking    | Sentry (`sentry-expo`)     | Crash reports, breadcrumbs, performance monitoring   |
+| Product Analytics | PostHog (React Native SDK) | Feature usage, onboarding funnels, retention cohorts |
+| CI/CD             | GitHub Actions → EAS Build | Auto-build on merge to `main`                        |
+| Source Control    | GitHub                     | Monorepo with conventional commits                   |
 
 ### 5.4 Cost Breakdown (MVP Scale)
 
-| Service                    | Free Tier Limit             | Monthly Cost | Notes                        |
-|----------------------------|-----------------------------|--------------|------------------------------|
-| Supabase                   | 50K MAU, 500MB DB           | $0           | Sufficient for first 1K users|
-| RevenueCat                 | < $2.5K MRR                 | $0           | 1% rev share after threshold |
-| Expo / EAS                 | 30 builds/month             | $0           | Free tier covers MVP         |
-| Sentry                     | 5K events/month             | $0           | Upgrade at ~5K DAU           |
-| PostHog                    | 1M events/month             | $0           | Generous free tier           |
-| Apple Developer Account    | —                           | $99/year     | Required for App Store       |
-| Google Play Developer      | —                           | $25 one-time | Required for Play Store      |
-| **Total Year 1**           |                             | **~$124**    |                              |
+| Service                 | Free Tier Limit   | Monthly Cost | Notes                         |
+| ----------------------- | ----------------- | ------------ | ----------------------------- |
+| Supabase                | 50K MAU, 500MB DB | $0           | Sufficient for first 1K users |
+| RevenueCat              | < $2.5K MRR       | $0           | 1% rev share after threshold  |
+| Expo / EAS              | 30 builds/month   | $0           | Free tier covers MVP          |
+| Sentry                  | 5K events/month   | $0           | Upgrade at ~5K DAU            |
+| PostHog                 | 1M events/month   | $0           | Generous free tier            |
+| Apple Developer Account | —                 | $99/year     | Required for App Store        |
+| Google Play Developer   | —                 | $25 one-time | Required for Play Store       |
+| **Total Year 1**        |                   | **~$124**    |                               |
 
 ---
 
@@ -594,13 +594,13 @@ CREATE POLICY "Users can CRUD own notification prefs"
 
 ### 6.4 Supabase Edge Functions
 
-| Function Name       | Trigger            | Description                                                     |
-|---------------------|--------------------|-----------------------------------------------------------------|
-| `calculate-streaks` | `pg_cron` (daily, 00:05 UTC) | Iterates all users, recalculates streaks based on `post_logs`. Resets streaks where no post exists for previous day (user timezone). Applies streak freezes. |
-| `send-notification` | Called by other functions | Accepts `user_id`, `title`, `body`, reads `push_token` from `notification_prefs`, sends via Expo Push API. |
-| `streak-at-risk`    | `pg_cron` (hourly, :30) | Finds users whose streak will expire in < 3 hours and who have `streak_at_risk = true`. Calls `send-notification`. |
-| `weekly-summary`    | `pg_cron` (Sundays 18:00 UTC) | Aggregates weekly post counts per platform per user. Sends summary notification to users with `weekly_summary = true`. |
-| `reset-freeze`      | `pg_cron` (Mondays 00:00 UTC) | Resets `freeze_used_this_week` to `false` on all streak records. |
+| Function Name       | Trigger                       | Description                                                                                                                                                  |
+| ------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `calculate-streaks` | `pg_cron` (daily, 00:05 UTC)  | Iterates all users, recalculates streaks based on `post_logs`. Resets streaks where no post exists for previous day (user timezone). Applies streak freezes. |
+| `send-notification` | Called by other functions     | Accepts `user_id`, `title`, `body`, reads `push_token` from `notification_prefs`, sends via Expo Push API.                                                   |
+| `streak-at-risk`    | `pg_cron` (hourly, :30)       | Finds users whose streak will expire in < 3 hours and who have `streak_at_risk = true`. Calls `send-notification`.                                           |
+| `weekly-summary`    | `pg_cron` (Sundays 18:00 UTC) | Aggregates weekly post counts per platform per user. Sends summary notification to users with `weekly_summary = true`.                                       |
+| `reset-freeze`      | `pg_cron` (Mondays 00:00 UTC) | Resets `freeze_used_this_week` to `false` on all streak records.                                                                                             |
 
 ---
 
@@ -611,13 +611,18 @@ CREATE POLICY "Users can CRUD own notification prefs"
 ```typescript
 // utils/streakCalculator.ts
 
-import { startOfDay, subDays, isEqual, differenceInCalendarDays } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
+import {
+  startOfDay,
+  subDays,
+  isEqual,
+  differenceInCalendarDays,
+} from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface StreakInput {
-  postDates: Date[];        // All posted_at dates for a user+platform
-  timezone: string;         // e.g., 'Africa/Lagos'
-  freezeDate: Date | null;  // Date when freeze was used this week
+  postDates: Date[]; // All posted_at dates for a user+platform
+  timezone: string; // e.g., 'Africa/Lagos'
+  freezeDate: Date | null; // Date when freeze was used this week
 }
 
 interface StreakResult {
@@ -641,7 +646,10 @@ export function calculateStreak(input: StreakInput): StreakResult {
   // Deduplicate (multiple posts on same day = 1 streak day)
   const uniqueDays: Date[] = [];
   for (const day of localDays) {
-    if (uniqueDays.length === 0 || !isEqual(day, uniqueDays[uniqueDays.length - 1])) {
+    if (
+      uniqueDays.length === 0 ||
+      !isEqual(day, uniqueDays[uniqueDays.length - 1])
+    ) {
       uniqueDays.push(day);
     }
   }
@@ -661,10 +669,18 @@ export function calculateStreak(input: StreakInput): StreakResult {
         // Freeze covers yesterday — streak continues
         // Fall through to counting
       } else {
-        return { currentStreak: 0, streakStartDate: null, lastPostDate: mostRecentPost };
+        return {
+          currentStreak: 0,
+          streakStartDate: null,
+          lastPostDate: mostRecentPost,
+        };
       }
     } else {
-      return { currentStreak: 0, streakStartDate: null, lastPostDate: mostRecentPost };
+      return {
+        currentStreak: 0,
+        streakStartDate: null,
+        lastPostDate: mostRecentPost,
+      };
     }
   }
 
@@ -679,7 +695,8 @@ export function calculateStreak(input: StreakInput): StreakResult {
     }
   }
 
-  const streakStartDate = uniqueDays[Math.min(streak - 1, uniqueDays.length - 1)];
+  const streakStartDate =
+    uniqueDays[Math.min(streak - 1, uniqueDays.length - 1)];
 
   return {
     currentStreak: streak,
@@ -694,21 +711,21 @@ export function calculateStreak(input: StreakInput): StreakResult {
 ```typescript
 // utils/goalProgress.ts
 
-import { startOfWeek, endOfWeek, isWithinInterval } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
+import { startOfWeek, endOfWeek, isWithinInterval } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface GoalProgress {
   platform: string;
   postsThisWeek: number;
   weeklyGoal: number;
-  percentage: number;       // 0–100, capped at 100
+  percentage: number; // 0–100, capped at 100
   isComplete: boolean;
 }
 
 export function calculateWeeklyProgress(
   postLogs: { platform: string; posted_at: Date }[],
   platformConfigs: { platform: string; weekly_goal: number }[],
-  timezone: string
+  timezone: string,
 ): GoalProgress[] {
   const now = toZonedTime(new Date(), timezone);
   const weekStart = startOfWeek(now, { weekStartsOn: 1 }); // Monday
@@ -721,12 +738,12 @@ export function calculateWeeklyProgress(
         isWithinInterval(toZonedTime(log.posted_at, timezone), {
           start: weekStart,
           end: weekEnd,
-        })
+        }),
     ).length;
 
     const percentage = Math.min(
       Math.round((postsThisWeek / config.weekly_goal) * 100),
-      100
+      100,
     );
 
     return {
@@ -750,14 +767,14 @@ export const STREAK_MILESTONES = [7, 14, 21, 30, 60, 90, 180, 365] as const;
 export type MilestoneType = (typeof STREAK_MILESTONES)[number];
 
 export const MILESTONE_MESSAGES: Record<MilestoneType, string> = {
-  7:   '1 week strong! You\'re building a real habit.',
-  14:  '2 weeks! Most creators quit by now. Not you.',
-  21:  '21 days — they say it takes this long to form a habit.',
-  30:  '30-DAY STREAK! You\'re in the top 10% of creators.',
-  60:  '60 days of consistency. This is who you are now.',
-  90:  'A full quarter of daily posting. Legendary.',
-  180: 'Half a year. Your audience notices. The algorithm notices.',
-  365: '365 DAYS. One full year. You are unstoppable.',
+  7: "1 week strong! You're building a real habit.",
+  14: "2 weeks! Most creators quit by now. Not you.",
+  21: "21 days — they say it takes this long to form a habit.",
+  30: "30-DAY STREAK! You're in the top 10% of creators.",
+  60: "60 days of consistency. This is who you are now.",
+  90: "A full quarter of daily posting. Legendary.",
+  180: "Half a year. Your audience notices. The algorithm notices.",
+  365: "365 DAYS. One full year. You are unstoppable.",
 };
 
 export function checkMilestone(streak: number): MilestoneType | null {
@@ -797,13 +814,13 @@ export function checkMilestone(streak: number): MilestoneType | null {
 
 ### 8.2 Notification Content Templates
 
-| Type            | Title                                   | Body                                                                     | Trigger                                |
-|-----------------|-----------------------------------------|--------------------------------------------------------------------------|----------------------------------------|
-| Daily Reminder  | `📝 Time to create`                    | `You haven't logged a post today. Your {platform} streak is at {n} days!`| Local notification at user's chosen time|
-| Streak at Risk  | `⚠️ Streak ending soon`               | `Your {platform} streak of {n} days expires in 3 hours. Post now!`       | Edge function, hourly check            |
-| Streak Lost     | `💔 Streak reset`                      | `Your {platform} streak was reset. Start a new one today!`               | Edge function, daily recalc            |
-| Weekly Summary  | `📊 Your week in review`              | `This week: {li}x LinkedIn, {tt}x TikTok, {yt}x YouTube. {status}`      | Edge function, Sunday evening          |
-| Milestone       | `🎉 {n}-day streak!`                  | `{milestone_message}`                                                    | Client-side, on post log               |
+| Type           | Title                    | Body                                                                      | Trigger                                  |
+| -------------- | ------------------------ | ------------------------------------------------------------------------- | ---------------------------------------- |
+| Daily Reminder | `📝 Time to create`      | `You haven't logged a post today. Your {platform} streak is at {n} days!` | Local notification at user's chosen time |
+| Streak at Risk | `⚠️ Streak ending soon`  | `Your {platform} streak of {n} days expires in 3 hours. Post now!`        | Edge function, hourly check              |
+| Streak Lost    | `💔 Streak reset`        | `Your {platform} streak was reset. Start a new one today!`                | Edge function, daily recalc              |
+| Weekly Summary | `📊 Your week in review` | `This week: {li}x LinkedIn, {tt}x TikTok, {yt}x YouTube. {status}`        | Edge function, Sunday evening            |
+| Milestone      | `🎉 {n}-day streak!`     | `{milestone_message}`                                                     | Client-side, on post log                 |
 
 ### 8.3 Expo Push API Integration
 
@@ -811,27 +828,27 @@ export function checkMilestone(streak: number): MilestoneType | null {
 // services/pushNotification.ts (Edge Function)
 
 interface ExpoPushMessage {
-  to: string;          // Expo push token
+  to: string; // Expo push token
   title: string;
   body: string;
   data?: Record<string, unknown>;
-  sound: 'default';
+  sound: "default";
   badge?: number;
 }
 
 async function sendPushNotification(message: ExpoPushMessage): Promise<void> {
-  const response = await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
+  const response = await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(message),
   });
 
   if (!response.ok) {
     const error = await response.json();
-    console.error('Expo Push API error:', error);
+    console.error("Expo Push API error:", error);
     throw new Error(`Push failed: ${response.status}`);
   }
 }
@@ -886,12 +903,12 @@ async function sendPushNotification(message: ExpoPushMessage): Promise<void> {
 ```typescript
 // services/syncQueue.ts
 
-import { MMKV } from 'react-native-mmkv';
-import NetInfo from '@react-native-community/netinfo';
-import { supabase } from './supabase';
+import { MMKV } from "react-native-mmkv";
+import NetInfo from "@react-native-community/netinfo";
+import { supabase } from "./supabase";
 
-const storage = new MMKV({ id: 'sync-queue' });
-const QUEUE_KEY = 'pending_post_logs';
+const storage = new MMKV({ id: "sync-queue" });
+const QUEUE_KEY = "pending_post_logs";
 
 interface QueuedPost {
   localId: string;
@@ -924,12 +941,10 @@ export async function flushQueue(): Promise<void> {
   const remaining: QueuedPost[] = [];
 
   for (const item of queue) {
-    const { error } = await supabase
-      .from('post_logs')
-      .insert(item.payload);
+    const { error } = await supabase.from("post_logs").insert(item.payload);
 
     if (error) {
-      console.error('Sync failed for', item.localId, error);
+      console.error("Sync failed for", item.localId, error);
       remaining.push(item); // Retry later
     }
   }
@@ -1113,36 +1128,36 @@ POSTHOG_HOST=https://app.posthog.com
 export const colors = {
   // ─── Backgrounds ───────────────────────────────────────
   dark: {
-    bg:          '#0D0D0D',   // Primary background
-    bgElevated:  '#1A1A1A',   // Cards, sheets
-    bgSubtle:    '#262626',   // Input fields, secondary surfaces
+    bg: "#0D0D0D", // Primary background
+    bgElevated: "#1A1A1A", // Cards, sheets
+    bgSubtle: "#262626", // Input fields, secondary surfaces
   },
   light: {
-    bg:          '#FAFAFA',
-    bgElevated:  '#FFFFFF',
-    bgSubtle:    '#F0F0F0',
+    bg: "#FAFAFA",
+    bgElevated: "#FFFFFF",
+    bgSubtle: "#F0F0F0",
   },
 
   // ─── Brand & Accent ────────────────────────────────────
-  primary:       '#7C3AED',   // Electric violet — buttons, links
-  primaryDark:   '#6D28D9',   // Pressed state
-  primaryLight:  '#A78BFA',   // Disabled / subtle
+  primary: "#7C3AED", // Electric violet — buttons, links
+  primaryDark: "#6D28D9", // Pressed state
+  primaryLight: "#A78BFA", // Disabled / subtle
 
   // ─── Semantic ──────────────────────────────────────────
-  streakActive:  '#F59E0B',   // Amber — fire / energy
-  success:       '#10B981',   // Emerald — logged / complete
-  warning:       '#EF4444',   // Coral — streak at risk
-  info:          '#3B82F6',   // Blue — informational
+  streakActive: "#F59E0B", // Amber — fire / energy
+  success: "#10B981", // Emerald — logged / complete
+  warning: "#EF4444", // Coral — streak at risk
+  info: "#3B82F6", // Blue — informational
 
   // ─── Platform Colors ──────────────────────────────────
-  linkedin:      '#0A66C2',
-  tiktok:        '#FE2C55',   // Pink-red accent (on dark bg)
-  youtube:       '#FF0000',
+  linkedin: "#0A66C2",
+  tiktok: "#FE2C55", // Pink-red accent (on dark bg)
+  youtube: "#FF0000",
 
   // ─── Text ──────────────────────────────────────────────
-  textPrimary:   '#FFFFFF',   // Dark mode
-  textSecondary: '#A0A0A0',
-  textMuted:     '#666666',
+  textPrimary: "#FFFFFF", // Dark mode
+  textSecondary: "#A0A0A0",
+  textMuted: "#666666",
 } as const;
 ```
 
@@ -1153,50 +1168,50 @@ export const colors = {
 
 export const typography = {
   // ─── Font Families ─────────────────────────────────────
-  sans:        'Inter-Regular',
-  sansBold:    'Inter-Bold',
-  mono:        'DMMono-Regular',
+  sans: "Inter-Regular",
+  sansBold: "Inter-Bold",
+  mono: "DMMono-Regular",
 
   // ─── Size Scale ────────────────────────────────────────
-  xs:   12,
-  sm:   14,
+  xs: 12,
+  sm: 14,
   base: 16,
-  lg:   18,
-  xl:   22,
-  '2xl': 28,
-  '3xl': 36,    // Streak counter display
-  '4xl': 48,    // Hero numbers
+  lg: 18,
+  xl: 22,
+  "2xl": 28,
+  "3xl": 36, // Streak counter display
+  "4xl": 48, // Hero numbers
 
   // ─── Line Heights ──────────────────────────────────────
-  tight:   1.2,
-  normal:  1.5,
+  tight: 1.2,
+  normal: 1.5,
   relaxed: 1.75,
 } as const;
 ```
 
 ### 11.3 Icon Map (Lucide)
 
-| Context             | Icon Name         | Usage                               |
-|---------------------|-------------------|-------------------------------------|
-| Tab: Home           | `Home`            | Bottom tab navigation               |
-| Tab: Calendar       | `Calendar`        | Bottom tab navigation               |
-| Tab: Stats          | `BarChart3`       | Bottom tab navigation               |
-| Tab: Settings       | `Settings`        | Bottom tab navigation               |
-| FAB: Log Post       | `Plus`            | Floating action button              |
-| Platform: LinkedIn  | `Linkedin`        | Platform picker, dashboard          |
-| Platform: YouTube   | `Youtube`         | Platform picker, dashboard          |
-| Platform: TikTok    | `Music`           | (Lucide has no TikTok icon — use custom SVG or `Music`) |
-| Streak Active       | `Flame`           | Streak counter                      |
-| Streak Frozen       | `Snowflake`       | Freeze indicator                    |
-| Post Logged         | `CheckCircle2`    | Today's status                      |
-| Post Pending        | `Circle`          | Today's status (empty)              |
-| Metrics: Views      | `Eye`             | Log post form                       |
-| Metrics: Likes      | `Heart`           | Log post form                       |
-| Metrics: Comments   | `MessageCircle`   | Log post form                       |
-| Metrics: Shares     | `Share2`          | Log post form                       |
-| Export              | `Download`        | Settings — CSV export               |
-| Back                | `ArrowLeft`       | Screen headers                      |
-| Expand              | `ChevronDown`     | Collapsible sections                |
+| Context            | Icon Name       | Usage                                                   |
+| ------------------ | --------------- | ------------------------------------------------------- |
+| Tab: Home          | `Home`          | Bottom tab navigation                                   |
+| Tab: Calendar      | `Calendar`      | Bottom tab navigation                                   |
+| Tab: Stats         | `BarChart3`     | Bottom tab navigation                                   |
+| Tab: Settings      | `Settings`      | Bottom tab navigation                                   |
+| FAB: Log Post      | `Plus`          | Floating action button                                  |
+| Platform: LinkedIn | `Linkedin`      | Platform picker, dashboard                              |
+| Platform: YouTube  | `Youtube`       | Platform picker, dashboard                              |
+| Platform: TikTok   | `Music`         | (Lucide has no TikTok icon — use custom SVG or `Music`) |
+| Streak Active      | `Flame`         | Streak counter                                          |
+| Streak Frozen      | `Snowflake`     | Freeze indicator                                        |
+| Post Logged        | `CheckCircle2`  | Today's status                                          |
+| Post Pending       | `Circle`        | Today's status (empty)                                  |
+| Metrics: Views     | `Eye`           | Log post form                                           |
+| Metrics: Likes     | `Heart`         | Log post form                                           |
+| Metrics: Comments  | `MessageCircle` | Log post form                                           |
+| Metrics: Shares    | `Share2`        | Log post form                                           |
+| Export             | `Download`      | Settings — CSV export                                   |
+| Back               | `ArrowLeft`     | Screen headers                                          |
+| Expand             | `ChevronDown`   | Collapsible sections                                    |
 
 ### 11.4 Screen Wireframes
 
@@ -1360,49 +1375,65 @@ export const typography = {
 └─────────────────────────────────────┘
 ```
 
+### Screenshots
+
+Refer to the screenshots below as a base for the Home Dashboard Screen design with its different ui states. Important: Your design should be exactly as it appears in the screenshot based on the different ui states:
+
+#### 1. Dasboard core states (darkmode, light mode, e.t.c)
+
+@context/screenshots/dashboard-core-states.png
+
+#### 2. Dashboard streak narrative
+
+@context/screenshots/dashboard-streak-narrative.png
+
+#### 2. Dashboard interactions
+
+@context/screenshots/dashboard-interactions.png
+
 ### 11.5 Animation Specifications
 
-| Animation          | Library                    | Trigger                       | Duration | Details                                    |
-|--------------------|----------------------------|-------------------------------|----------|--------------------------------------------|
-| Streak flame       | `lottie-react-native`      | Streak > 0, loops             | 2s loop  | Subtle orange/amber flame behind number    |
-| Progress bar fill  | `react-native-reanimated`  | On data load                  | 600ms    | Ease-out spring animation                  |
-| Confetti burst     | `lottie-react-native`      | Milestone hit                 | 3s       | Full-screen confetti overlay               |
-| Log success check  | `react-native-reanimated`  | Post logged                   | 400ms    | Scale-up + fade-in checkmark               |
-| Haptic feedback    | `expo-haptics`             | Post logged                   | —        | `Haptics.notificationAsync(Success)`       |
-| Card press         | `react-native-reanimated`  | Touch start/end               | 150ms    | Scale to 0.97, opacity to 0.8             |
+| Animation         | Library                   | Trigger           | Duration | Details                                 |
+| ----------------- | ------------------------- | ----------------- | -------- | --------------------------------------- |
+| Streak flame      | `lottie-react-native`     | Streak > 0, loops | 2s loop  | Subtle orange/amber flame behind number |
+| Progress bar fill | `react-native-reanimated` | On data load      | 600ms    | Ease-out spring animation               |
+| Confetti burst    | `lottie-react-native`     | Milestone hit     | 3s       | Full-screen confetti overlay            |
+| Log success check | `react-native-reanimated` | Post logged       | 400ms    | Scale-up + fade-in checkmark            |
+| Haptic feedback   | `expo-haptics`            | Post logged       | —        | `Haptics.notificationAsync(Success)`    |
+| Card press        | `react-native-reanimated` | Touch start/end   | 150ms    | Scale to 0.97, opacity to 0.8           |
 
 ---
 
 ## 12. Key Reference Documentation
 
-| Resource                    | URL                                                            | Used For                        |
-|-----------------------------|----------------------------------------------------------------|---------------------------------|
-| Expo Docs                   | https://docs.expo.dev                                          | Core framework reference        |
-| Expo Router                 | https://docs.expo.dev/router/introduction                      | File-based navigation           |
-| Expo Notifications          | https://docs.expo.dev/push-notifications/overview              | Push notification setup         |
-| Expo Haptics                | https://docs.expo.dev/versions/latest/sdk/haptics              | Vibration feedback              |
-| Supabase JS Client          | https://supabase.com/docs/reference/javascript                 | Database CRUD, auth             |
-| Supabase Auth (RN)          | https://supabase.com/docs/guides/auth/quickstarts/react-native | Authentication setup            |
-| Supabase Edge Functions      | https://supabase.com/docs/guides/functions                     | Serverless streak logic         |
-| Supabase RLS                | https://supabase.com/docs/guides/database/postgres/row-level-security | Security policies        |
-| RevenueCat React Native     | https://www.revenuecat.com/docs/reactnative                    | Subscription management         |
-| Zustand                     | https://docs.pmnd.rs/zustand                                   | State management                |
-| react-native-mmkv           | https://github.com/mrousavy/react-native-mmkv                 | Fast local storage              |
-| react-native-calendars      | https://github.com/wix/react-native-calendars                 | Calendar component              |
-| react-native-gifted-charts  | https://github.com/nicekiwi/react-native-gifted-charts         | Charts & data visualization     |
-| react-native-reanimated     | https://docs.swmansion.com/react-native-reanimated             | Animations                      |
-| lucide-react-native         | https://lucide.dev/guide/packages/lucide-react-native          | Icon library                    |
-| date-fns                    | https://date-fns.org/docs                                      | Date manipulation               |
-| date-fns-tz                 | https://github.com/marnusw/date-fns-tz                        | Timezone conversions            |
-| Expo Push API               | https://docs.expo.dev/push-notifications/sending-notifications | Server-side push                |
-| EAS Build                   | https://docs.expo.dev/build/introduction                       | Cloud builds                    |
-| EAS Update                  | https://docs.expo.dev/eas-update/introduction                  | OTA updates                     |
-| Lottie React Native         | https://github.com/lottie-react-native/lottie-react-native    | JSON animations                 |
-| PostHog React Native        | https://posthog.com/docs/libraries/react-native                | Product analytics               |
-| Sentry Expo                 | https://docs.sentry.io/platforms/react-native/manual-setup/expo | Error tracking                 |
-| react-hook-form             | https://react-hook-form.com/get-started                        | Form management                 |
+| Resource                   | URL                                                                   | Used For                    |
+| -------------------------- | --------------------------------------------------------------------- | --------------------------- |
+| Expo Docs                  | https://docs.expo.dev                                                 | Core framework reference    |
+| Expo Router                | https://docs.expo.dev/router/introduction                             | File-based navigation       |
+| Expo Notifications         | https://docs.expo.dev/push-notifications/overview                     | Push notification setup     |
+| Expo Haptics               | https://docs.expo.dev/versions/latest/sdk/haptics                     | Vibration feedback          |
+| Supabase JS Client         | https://supabase.com/docs/reference/javascript                        | Database CRUD, auth         |
+| Supabase Auth (RN)         | https://supabase.com/docs/guides/auth/quickstarts/react-native        | Authentication setup        |
+| Supabase Edge Functions    | https://supabase.com/docs/guides/functions                            | Serverless streak logic     |
+| Supabase RLS               | https://supabase.com/docs/guides/database/postgres/row-level-security | Security policies           |
+| RevenueCat React Native    | https://www.revenuecat.com/docs/reactnative                           | Subscription management     |
+| Zustand                    | https://docs.pmnd.rs/zustand                                          | State management            |
+| react-native-mmkv          | https://github.com/mrousavy/react-native-mmkv                         | Fast local storage          |
+| react-native-calendars     | https://github.com/wix/react-native-calendars                         | Calendar component          |
+| react-native-gifted-charts | https://github.com/nicekiwi/react-native-gifted-charts                | Charts & data visualization |
+| react-native-reanimated    | https://docs.swmansion.com/react-native-reanimated                    | Animations                  |
+| lucide-react-native        | https://lucide.dev/guide/packages/lucide-react-native                 | Icon library                |
+| date-fns                   | https://date-fns.org/docs                                             | Date manipulation           |
+| date-fns-tz                | https://github.com/marnusw/date-fns-tz                                | Timezone conversions        |
+| Expo Push API              | https://docs.expo.dev/push-notifications/sending-notifications        | Server-side push            |
+| EAS Build                  | https://docs.expo.dev/build/introduction                              | Cloud builds                |
+| EAS Update                 | https://docs.expo.dev/eas-update/introduction                         | OTA updates                 |
+| Lottie React Native        | https://github.com/lottie-react-native/lottie-react-native            | JSON animations             |
+| PostHog React Native       | https://posthog.com/docs/libraries/react-native                       | Product analytics           |
+| Sentry Expo                | https://docs.sentry.io/platforms/react-native/manual-setup/expo       | Error tracking              |
+| react-hook-form            | https://react-hook-form.com/get-started                               | Form management             |
 
 ---
 
-*Document version: 1.0*
-*Last updated: April 2026*
+_Document version: 1.0_
+_Last updated: April 2026_

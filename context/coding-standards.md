@@ -62,53 +62,132 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
 ## File Organization
 
 ```
-app/                          # Expo Router screens (file-based routing)
-  (auth)/                     # Auth stack group
-  (onboarding)/               # Onboarding stack group
-  (tabs)/                     # Main tab navigator group
-  log-post.tsx                # Modal screen
-  settings/                   # Nested settings routes
-
-components/
-  ui/                         # Primitives (Button, Card, ProgressBar)
-  dashboard/                  # Home screen components
-  log/                        # Post logging components
-  calendar/                   # Calendar view components
-  stats/                      # Analytics components
-  shared/                     # Cross-feature components (PlatformIcon, EmptyState)
-
-hooks/                        # Custom React hooks
-  useStreak.ts
-  useWeeklyProgress.ts
-  usePostLogs.ts
-  useSubscription.ts
-
-stores/                       # Zustand state stores
-  authStore.ts
-  postStore.ts
-  streakStore.ts
-
-services/                     # External service integrations
-  supabase.ts
-  syncQueue.ts
-  notifications.ts
-  analytics.ts
-
-utils/                        # Pure utility functions (no side effects)
-  streakCalculator.ts
-  goalProgress.ts
-  dateHelpers.ts
-  csvExport.ts
-
-constants/                    # Static configuration
-  colors.ts
-  platforms.ts
-  milestones.ts
-
-types/                        # TypeScript type definitions
-  database.ts                 # Supabase-generated types
-  navigation.ts
-  index.ts
+creatorlog/
+├── app/                              # Expo Router screens
+│   ├── _layout.tsx                   # Root layout (providers, theme)
+│   ├── index.tsx                     # Entry redirect (auth check)
+│   ├── (auth)/
+│   │   ├── sign-in.tsx
+│   │   ├── sign-up.tsx
+│   │   └── forgot-password.tsx
+│   ├── (onboarding)/
+│   │   ├── platforms.tsx
+│   │   ├── goals.tsx
+│   │   └── reminders.tsx
+│   ├── (tabs)/
+│   │   ├── _layout.tsx               # Tab navigator config
+│   │   ├── home.tsx                  # Dashboard
+│   │   ├── calendar.tsx              # Calendar view
+│   │   ├── stats.tsx                 # Analytics
+│   │   └── settings.tsx              # Preferences
+│   ├── log-post.tsx                  # Modal — log a new post
+│   ├── log-post/[id].tsx            # Modal — edit existing log
+│   ├── calendar/[date].tsx          # Bottom sheet — day detail
+│   └── settings/
+│       ├── goals.tsx
+│       ├── notifs.tsx
+│       ├── account.tsx
+│       └── export.tsx
+│
+├── components/                       # Reusable UI components
+│   ├── ui/                           # Primitives
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── ProgressBar.tsx
+│   │   ├── Badge.tsx
+│   │   └── BottomSheet.tsx
+│   ├── dashboard/
+│   │   ├── StreakCounter.tsx          # Animated flame + number
+│   │   ├── TodayStatus.tsx           # Platform checkboxes
+│   │   ├── WeeklyProgress.tsx        # Per-platform progress bars
+│   │   └── QuickStats.tsx            # Posts this week/month
+│   ├── log/
+│   │   ├── PlatformPicker.tsx        # Tap-to-select platform
+│   │   ├── ContentTypePicker.tsx     # Dynamic content type grid
+│   │   └── MetricsInput.tsx          # Collapsible metrics fields
+│   ├── calendar/
+│   │   ├── PostCalendar.tsx          # Monthly grid with dots
+│   │   └── DayDetail.tsx             # What was posted on a day
+│   ├── stats/
+│   │   ├── PostsBarChart.tsx         # Weekly bar chart
+│   │   ├── StreakHistory.tsx          # Current vs best per platform
+│   │   └── BestDayCard.tsx           # Best posting day insight
+│   └── shared/
+│       ├── PlatformIcon.tsx          # LinkedIn/TikTok/YouTube icon
+│       ├── ConfettiOverlay.tsx       # Milestone celebration
+│       └── EmptyState.tsx            # No data placeholder
+│
+├── stores/                           # Zustand state stores
+│   ├── authStore.ts                  # User session, profile
+│   ├── postStore.ts                  # Post logs CRUD + local cache
+│   ├── streakStore.ts                # Streak state + calculations
+│   ├── platformStore.ts             # Platform configs + goals
+│   └── settingsStore.ts             # Theme, notification prefs
+│
+├── services/                         # External service integrations
+│   ├── supabase.ts                   # Supabase client init
+│   ├── syncQueue.ts                  # Offline sync queue (MMKV)
+│   ├── notifications.ts             # Push token registration + local
+│   └── analytics.ts                 # PostHog wrapper
+│
+├── hooks/                            # Custom React hooks
+│   ├── useStreak.ts                  # Read streak for platform
+│   ├── useWeeklyProgress.ts         # Calculate weekly goal progress
+│   ├── usePostLogs.ts               # Fetch + filter post logs
+│   └── useSubscription.ts           # RevenueCat subscription state
+│
+├── utils/                            # Pure utility functions
+│   ├── streakCalculator.ts           # Streak math (see §7.1)
+│   ├── goalProgress.ts              # Weekly progress (see §7.2)
+│   ├── dateHelpers.ts               # Timezone-aware date utils
+│   └── csvExport.ts                 # Generate CSV from post logs
+│
+├── constants/                        # Static configuration
+│   ├── colors.ts                     # Theme color tokens
+│   ├── platforms.ts                  # Platform metadata + content types
+│   ├── milestones.ts                # Streak milestone definitions
+│   └── notifications.ts            # Notification templates
+│
+├── types/                            # TypeScript type definitions
+│   ├── database.ts                   # Supabase-generated types
+│   ├── navigation.ts                # Route params
+│   └── index.ts                     # Shared app types
+│
+├── assets/                           # Static assets
+│   ├── fonts/
+│   │   ├── Inter-Regular.ttf
+│   │   ├── Inter-Bold.ttf
+│   │   └── DMMono-Regular.ttf
+│   ├── animations/
+│   │   ├── confetti.json            # Lottie confetti
+│   │   └── flame.json              # Lottie streak flame
+│   └── images/
+│       └── onboarding/
+│
+├── supabase/                         # Supabase project files
+│   ├── migrations/
+│   │   ├── 001_create_profiles.sql
+│   │   ├── 002_create_platform_configs.sql
+│   │   ├── 003_create_post_logs.sql
+│   │   ├── 004_create_streaks.sql
+│   │   ├── 005_create_notification_prefs.sql
+│   │   └── 006_create_rls_policies.sql
+│   └── functions/
+│       ├── calculate-streaks/index.ts
+│       ├── streak-at-risk/index.ts
+│       ├── weekly-summary/index.ts
+│       ├── send-notification/index.ts
+│       └── reset-freeze/index.ts
+│
+├── .github/
+│   └── workflows/
+│       └── eas-build.yml             # CI/CD pipeline
+│
+├── app.json                          # Expo config
+├── eas.json                          # EAS Build profiles
+├── tsconfig.json
+├── package.json
+└── .env.example                      # Required env vars
 ```
 
 ## Naming
@@ -132,7 +211,7 @@ types/                        # TypeScript type definitions
 
 ```typescript
 // ✅ Good — focused Zustand store
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface StreakState {
   streaks: Record<string, StreakRecord>;
@@ -221,20 +300,20 @@ const styles = StyleSheet.create({
 
 ```typescript
 // ✅ Good — typed Supabase query
-import { supabase } from '@/services/supabase';
-import type { Database } from '@/types/database';
+import { supabase } from "@/services/supabase";
+import type { Database } from "@/types/database";
 
-type PostLog = Database['public']['Tables']['post_logs']['Row'];
+type PostLog = Database["public"]["Tables"]["post_logs"]["Row"];
 
 const { data, error } = await supabase
-  .from('post_logs')
-  .select('*')
-  .eq('user_id', userId)
-  .order('posted_at', { ascending: false })
+  .from("post_logs")
+  .select("*")
+  .eq("user_id", userId)
+  .order("posted_at", { ascending: false })
   .limit(20);
 
 // ❌ Bad — untyped, no error handling
-const data = await supabase.from('post_logs').select('*');
+const data = await supabase.from("post_logs").select("*");
 ```
 
 ## Data Fetching & Sync
@@ -246,13 +325,13 @@ const data = await supabase.from('post_logs').select('*');
 
 ```typescript
 // ✅ Good — offline-first write
-import { enqueue } from '@/services/syncQueue';
-import { postLogSchema } from '@/types/validation';
+import { enqueue } from "@/services/syncQueue";
+import { postLogSchema } from "@/types/validation";
 
 async function logPost(input: unknown) {
   const parsed = postLogSchema.parse(input);
-  saveToLocalCache(parsed);     // MMKV — instant
-  enqueue(parsed);              // Queue for Supabase sync
+  saveToLocalCache(parsed); // MMKV — instant
+  enqueue(parsed); // Queue for Supabase sync
 }
 ```
 
@@ -275,15 +354,18 @@ interface Result<T> {
 async function fetchStreaks(userId: string): Promise<Result<StreakRecord[]>> {
   try {
     const { data, error } = await supabase
-      .from('streaks')
-      .select('*')
-      .eq('user_id', userId);
+      .from("streaks")
+      .select("*")
+      .eq("user_id", userId);
 
     if (error) throw error;
     return { success: true, data };
   } catch (err) {
     Sentry.captureException(err);
-    return { success: false, error: 'Failed to load streaks. Pull down to retry.' };
+    return {
+      success: false,
+      error: "Failed to load streaks. Pull down to retry.",
+    };
   }
 }
 ```
