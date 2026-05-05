@@ -35,7 +35,7 @@ export default function HomeScreen() {
 
   const [showMilestone, setShowMilestone] = useState(false);
 
-  const data = MOCK_STREAK_FROZEN;
+  const data = MOCK_DEFAULT;
   const isNewUser = data.streak.state === "new";
 
   const handlePlatformPress = useCallback(() => {
