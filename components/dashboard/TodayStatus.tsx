@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AppColors } from '@/constants/colors';
@@ -10,6 +10,7 @@ import type { DashboardData } from '@/lib/mock-data';
 interface TodayStatusProps {
   todayStatus: DashboardData['todayStatus'];
   allGoalsCompleteToday: boolean;
+  onPlatformPress?: () => void;
 }
 
 const PLATFORM_ICON: Record<string, string> = {
@@ -18,7 +19,7 @@ const PLATFORM_ICON: Record<string, string> = {
   youtube: 'logo-youtube',
 };
 
-export const TodayStatus: React.FC<TodayStatusProps> = ({ todayStatus, allGoalsCompleteToday }) => {
+export const TodayStatus: React.FC<TodayStatusProps> = ({ todayStatus, allGoalsCompleteToday, onPlatformPress }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const theme = isDark ? AppColors.dark : AppColors.light;
@@ -37,9 +38,11 @@ export const TodayStatus: React.FC<TodayStatusProps> = ({ todayStatus, allGoalsC
 
       <View style={styles.platformRow}>
         {todayStatus.map(({ platform, loggedToday }) => (
-          <View
+          <TouchableOpacity
             key={platform}
             style={[styles.platformCard, { backgroundColor: theme.bgElevated }]}
+            onPress={onPlatformPress}
+            activeOpacity={0.75}
           >
             <View style={styles.statusIndicator}>
               {loggedToday ? (
@@ -58,7 +61,7 @@ export const TodayStatus: React.FC<TodayStatusProps> = ({ todayStatus, allGoalsC
             <Text style={[styles.platformLabel, { color: theme.textSecondary }]}>
               {PLATFORM_LABELS[platform]}
             </Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

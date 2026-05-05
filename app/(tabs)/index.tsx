@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { AppColors } from "@/constants/colors";
 import { typography } from "@/constants/typography";
@@ -16,24 +17,34 @@ import { StreakCounter } from "@/components/dashboard/StreakCounter";
 import { TodayStatus } from "@/components/dashboard/TodayStatus";
 import { WeeklyProgress } from "@/components/dashboard/WeeklyProgress";
 import { QuickStats } from "@/components/dashboard/QuickStats";
+import { MilestoneCelebration } from "@/components/dashboard/MilestoneCelebration";
 import {
   MOCK_DEFAULT,
   MOCK_NEW_USER,
-  MOCK_MILESTONE,
-  MOCK_STREAK_AT_RISK,
   MOCK_STREAK_FROZEN,
-  MOCK_ALL_GOALS_COMPLETE,
-  MOCK_SYNCING,
-  MOCK_STREAK_LAPSED,
 } from "@/lib/mock-data";
+
+const MILESTONE_STREAK = 30;
+const MILESTONE_MESSAGE = "You're in the top 50% of creators. Keep it going.";
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const theme = isDark ? AppColors.dark : AppColors.light;
+  const router = useRouter();
 
-  const data = MOCK_STREAK_LAPSED;
+  const [showMilestone, setShowMilestone] = useState(false);
+
+  const data = MOCK_STREAK_FROZEN;
   const isNewUser = data.streak.state === "new";
+
+  const handlePlatformPress = useCallback(() => {
+    setShowMilestone((prev) => !prev);
+  }, []);
+
+  const handleSettingsPress = useCallback(() => {
+    router.navigate("/(tabs)/settings");
+  }, [router]);
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
@@ -51,6 +62,7 @@ export default function HomeScreen() {
         </View>
         <TouchableOpacity
           style={styles.headerRight}
+          onPress={handleSettingsPress}
           hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
         >
           <Ionicons
@@ -71,6 +83,7 @@ export default function HomeScreen() {
         <TodayStatus
           todayStatus={data.todayStatus}
           allGoalsCompleteToday={data.allGoalsCompleteToday}
+          onPlatformPress={handlePlatformPress}
         />
 
         <WeeklyProgress weeklyProgress={data.weeklyProgress} />
@@ -85,6 +98,13 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.fab} activeOpacity={0.85}>
         <Ionicons name="add" size={30} color="#FFFFFF" />
       </TouchableOpacity>
+
+      <MilestoneCelebration
+        visible={showMilestone}
+        streakCount={MILESTONE_STREAK}
+        message={MILESTONE_MESSAGE}
+        onDismiss={() => setShowMilestone(false)}
+      />
     </SafeAreaView>
   );
 }
