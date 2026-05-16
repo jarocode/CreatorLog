@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,11 @@ import {
   StyleSheet,
   StatusBar,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useSettingsStore } from "@/stores/settingsStore";
 import { AppColors } from "@/constants/colors";
@@ -60,6 +62,14 @@ export default function SettingsScreen() {
   const isDark = colorScheme === "dark";
   const theme = isDark ? AppColors.dark : AppColors.light;
   const { toggleTheme } = useSettingsStore();
+  const router = useRouter();
+
+  const goToAuth = useCallback(
+    (route: "sign-in" | "sign-up" | "forgot-password") => {
+      router.push(`/(auth)/${route}`);
+    },
+    [router],
+  );
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
@@ -168,10 +178,63 @@ export default function SettingsScreen() {
             isLast
           />
         </View>
+        <Text style={[styles.sectionLabel, { color: theme.textMuted }]}>
+          DEBUG
+        </Text>
+        <View style={[styles.card, { backgroundColor: theme.bgElevated }]}>
+          <DebugLinkRow
+            label="Sign in screen"
+            onPress={() => goToAuth("sign-in")}
+            theme={theme}
+          />
+          <DebugLinkRow
+            label="Sign up screen"
+            onPress={() => goToAuth("sign-up")}
+            theme={theme}
+          />
+          <DebugLinkRow
+            label="Forgot password screen"
+            onPress={() => goToAuth("forgot-password")}
+            theme={theme}
+            isLast
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+interface DebugLinkRowProps {
+  label: string;
+  onPress: () => void;
+  theme: AppTheme;
+  isLast?: boolean;
+}
+
+const DebugLinkRow: React.FC<DebugLinkRowProps> = ({
+  label,
+  onPress,
+  theme,
+  isLast,
+}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    activeOpacity={0.7}
+    style={[
+      styles.row,
+      !isLast && styles.rowBorder,
+      { borderBottomColor: theme.border },
+    ]}
+  >
+    <View style={[styles.rowIcon, { backgroundColor: theme.bgSubtle }]}>
+      <Ionicons name="flask-outline" size={17} color={AppColors.primary} />
+    </View>
+    <View style={styles.rowText}>
+      <Text style={[styles.rowLabel, { color: theme.text }]}>{label}</Text>
+    </View>
+    <Ionicons name="chevron-forward" size={16} color={theme.textMuted} />
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   safeArea: {

@@ -51,3 +51,5 @@ export const AppColors = {
   tiktok: '#FE2C55',
   youtube: '#FF0000',
 } as const;
+
+export type ThemeColors = typeof AppColors.dark | typeof AppColors.light;
