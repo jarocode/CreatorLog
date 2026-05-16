@@ -1,18 +1,37 @@
 # Current Feature
 
-<!-- Feature name and short description -->
+Supabase Database Setup — Stand up the Supabase project (Postgres + Auth + Edge Functions) that backs CreatorLog: schema, RLS, indexes, edge functions, and typed client bindings.
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+In Progress
 
 ## Goals
 
-<!-- Goals and Requirements -->
+- Use Supabase managed Postgres; client uses `@supabase/supabase-js` directly (no ORM)
+- Create initial schema for the MVP tables: `profiles`, `platform_configs`, `post_logs`, `streaks`, `notification_prefs` (per `context/project-overview.md` §6)
+- Wire Supabase Auth (email/password, magic link, Apple SSO, Google SSO); `auth.users` is source of identity; `public.profiles` extends it via `handle_new_user` trigger
+- Enable Row Level Security on every table — users can only read/write their own rows
+- Add indexes per §6.2 and `ON DELETE CASCADE` on all `user_id` foreign keys
+- Implement Edge Functions in `supabase/functions/` scheduled via `pg_cron`:
+  - `calculate-streaks` (daily 00:05 UTC)
+  - `streak-at-risk` (hourly :30)
+  - `weekly-summary` (Sundays 18:00 UTC)
+  - `reset-freeze` (Mondays 00:00 UTC)
+  - `send-notification` (invoked by the others; wraps Expo Push API)
+- Generate typed bindings with `supabase gen types typescript` into `types/database.ts`
 
 ## Notes
 
-<!-- Any extra notes -->
+- Reference spec: `context/features/database-spec.md`; schema/RLS/edge function table: `context/project-overview.md` §6; standards: `context/coding-standards.md` (Database section)
+- Work against a development Supabase project linked via `supabase link`; production is a separate project
+- ALWAYS create migrations with `supabase migration new <name>` and apply via `supabase db push` — never edit tables directly in the dashboard unless specified
+- Migration files numbered sequentially in `supabase/migrations/` (see §10)
+- Env vars (`.env`):
+  - `EXPO_PUBLIC_SUPABASE_URL`
+  - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `service_role` key only used inside edge functions — never expose to the client
+- Edge functions use `service_role` for admin writes (streak inserts/deletes); mobile client only ever uses `anon` key under RLS
 
 ## History
 
