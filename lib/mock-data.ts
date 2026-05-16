@@ -212,3 +212,97 @@ export const MOCK_SYNCING: DashboardData = {
 };
 
 export const MOCK_DASHBOARD = MOCK_DEFAULT;
+
+// ────────────────────────────────────────────────────────────
+// Calendar mock data
+// ────────────────────────────────────────────────────────────
+
+export interface CalendarDayData {
+  posts: Platform[];
+  freeze?: boolean;
+}
+
+export interface CalendarMonth {
+  year: number;
+  month: number; // 0-indexed (0 = January)
+  todayDay: number | null; // day-of-month to highlight, or null if not viewing current month
+  totalPosts: number;
+  comparisonText: string;
+  comparisonPositive: boolean;
+  postsByDay: Record<number, CalendarDayData>;
+}
+
+export const MOCK_CALENDAR_MONTH: CalendarMonth = {
+  year: 2026,
+  month: 3, // April
+  todayDay: 23,
+  totalPosts: 22,
+  comparisonText: "+18% vs March",
+  comparisonPositive: true,
+  postsByDay: {
+    2: { posts: ["linkedin", "tiktok"] },
+    3: { posts: ["linkedin"] },
+    4: { posts: ["tiktok"] },
+    5: { posts: ["linkedin", "youtube"] },
+    7: { posts: ["linkedin"] },
+    8: { posts: ["tiktok", "linkedin"] },
+    9: { posts: ["linkedin"] },
+    10: { posts: ["linkedin"] },
+    12: { posts: ["linkedin", "tiktok", "youtube"] },
+    13: { posts: ["tiktok"] },
+    14: { posts: ["linkedin"] },
+    15: { posts: ["linkedin", "tiktok"] },
+    16: { posts: ["linkedin"] },
+    17: { posts: ["youtube"] },
+    18: { posts: [], freeze: true },
+    19: { posts: ["linkedin"] },
+    20: { posts: ["tiktok"] },
+    22: { posts: ["linkedin", "youtube"] },
+    23: { posts: ["linkedin", "tiktok"] },
+    24: { posts: ["linkedin"] },
+    26: { posts: ["tiktok"] },
+    28: { posts: ["linkedin", "youtube"] },
+    30: { posts: ["linkedin"] },
+  },
+};
+
+// ────────────────────────────────────────────────────────────
+// Stats mock data
+// ────────────────────────────────────────────────────────────
+
+export interface PlatformPostCount {
+  platform: Platform;
+  count: number;
+}
+
+export interface PlatformStreak {
+  platform: Platform;
+  current: number;
+  best: number;
+}
+
+export interface StatsData {
+  weeksRange: string;
+  postsPerPlatform: PlatformPostCount[];
+  totalPosts: number;
+  streaks: PlatformStreak[];
+  bestDay: { day: string; avgPosts: number };
+  trend: { percentChange: number; positive: boolean; period: string };
+}
+
+export const MOCK_STATS: StatsData = {
+  weeksRange: "4 weeks",
+  postsPerPlatform: [
+    { platform: "linkedin", count: 14 },
+    { platform: "tiktok", count: 8 },
+    { platform: "youtube", count: 4 },
+  ],
+  totalPosts: 26,
+  streaks: [
+    { platform: "linkedin", current: 12, best: 28 },
+    { platform: "tiktok", current: 5, best: 14 },
+    { platform: "youtube", current: 2, best: 9 },
+  ],
+  bestDay: { day: "Tuesday", avgPosts: 5.2 },
+  trend: { percentChange: 52, positive: true, period: "vs last month" },
+};

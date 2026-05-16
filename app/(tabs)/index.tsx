@@ -18,11 +18,7 @@ import { TodayStatus } from "@/components/dashboard/TodayStatus";
 import { WeeklyProgress } from "@/components/dashboard/WeeklyProgress";
 import { QuickStats } from "@/components/dashboard/QuickStats";
 import { MilestoneCelebration } from "@/components/dashboard/MilestoneCelebration";
-import {
-  MOCK_DEFAULT,
-  MOCK_NEW_USER,
-  MOCK_STREAK_FROZEN,
-} from "@/lib/mock-data";
+import { MOCK_DEFAULT } from "@/lib/mock-data";
 
 const MILESTONE_STREAK = 30;
 const MILESTONE_MESSAGE = "You're in the top 50% of creators. Keep it going.";
@@ -44,6 +40,10 @@ export default function HomeScreen() {
 
   const handleSettingsPress = useCallback(() => {
     router.navigate("/(tabs)/settings");
+  }, [router]);
+
+  const handleLogPostPress = useCallback(() => {
+    router.push("/log-post");
   }, [router]);
 
   return (
@@ -95,7 +95,7 @@ export default function HomeScreen() {
         />
       </ScrollView>
 
-      <TouchableOpacity style={styles.fab} activeOpacity={0.85}>
+      <TouchableOpacity style={styles.fab} activeOpacity={0.85} onPress={handleLogPostPress}>
         <Ionicons name="add" size={30} color="#FFFFFF" />
       </TouchableOpacity>
 
