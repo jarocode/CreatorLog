@@ -1375,6 +1375,165 @@ export const typography = {
 └─────────────────────────────────────┘
 ```
 
+#### Sign In
+
+```
+┌─────────────────────────────────────┐
+│                                     │
+│              🔥                      │
+│          CreatorLog                  │
+│                                     │
+│      Welcome back, creator           │
+│                                     │
+│  EMAIL                              │
+│  ┌─────────────────────────────┐    │
+│  │  you@email.com              │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  PASSWORD            Forgot? ▸      │
+│  ┌─────────────────────────────┐    │
+│  │  ••••••••••           👁    │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │       Sign in               │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ─────────── or ───────────         │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  ✉️  Email me a magic link  │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │   Continue with Apple        │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  G  Continue with Google     │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│   Don't have an account?  Sign up ▸ │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+**Auth calls:** `supabase.auth.signInWithPassword({ email, password })` · `supabase.auth.signInWithOtp({ email })` (magic link) · `supabase.auth.signInWithIdToken({ provider: 'apple' | 'google', token })`.
+
+#### Sign Up
+
+```
+┌─────────────────────────────────────┐
+│  ←                                  │
+│                                     │
+│              🔥                      │
+│          CreatorLog                  │
+│                                     │
+│       Start your streak today        │
+│                                     │
+│  NAME                               │
+│  ┌─────────────────────────────┐    │
+│  │  e.g. "Sam Adeyemi"         │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  EMAIL                              │
+│  ┌─────────────────────────────┐    │
+│  │  you@email.com              │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  PASSWORD                           │
+│  ┌─────────────────────────────┐    │
+│  │  ••••••••••••         👁    │    │
+│  └─────────────────────────────┘    │
+│  ▓▓▓▓▓▓▓▓░░░░░░  Strong              │
+│  • 8+ characters  • 1 number         │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │      Create account         │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ─────────── or ───────────         │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │   Continue with Apple        │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  G  Continue with Google     │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│   By signing up you agree to our    │
+│   Terms and Privacy Policy.          │
+│                                     │
+│   Already a user?       Sign in ▸   │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+**Auth call:** `supabase.auth.signUp({ email, password, options: { data: { full_name }}})`. The `handle_new_user` trigger on `auth.users` auto-creates the `public.profiles` row using `full_name` from `raw_user_meta_data`. After sign-up, route to onboarding (see §4.2).
+
+#### Forgot Password
+
+```
+┌─────────────────────────────────────┐
+│  ←                                  │
+│                                     │
+│              🔑                      │
+│                                     │
+│       Reset your password            │
+│                                     │
+│   Enter the email tied to your       │
+│   account and we'll send a link      │
+│   to reset your password.            │
+│                                     │
+│  EMAIL                              │
+│  ┌─────────────────────────────┐    │
+│  │  you@email.com              │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │      Send reset link        │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│   Remembered it?       Sign in ▸    │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+**Post-submit confirmation state:**
+
+```
+┌─────────────────────────────────────┐
+│  ←                                  │
+│                                     │
+│              ✉️                      │
+│                                     │
+│       Check your inbox               │
+│                                     │
+│   We sent a reset link to            │
+│   you@email.com.  The link expires   │
+│   in 60 minutes.                     │
+│                                     │
+│   Didn't get it?  Resend ▸          │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │       Back to sign in       │    │
+│  └─────────────────────────────┘    │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+**Auth call:** `supabase.auth.resetPasswordForEmail(email, { redirectTo: 'creatorlog://reset-password' })`. The deep link routes to a follow-up screen (`/(auth)/reset-password.tsx`) where the user sets a new password via `supabase.auth.updateUser({ password })`.
+
+#### Auth wireframe notes
+
+- **Loading states** — primary buttons swap label for a spinner while the auth call is in flight
+- **Error states** — inline red helper text below the offending field; never modal alerts
+- **Magic link flow** — after `signInWithOtp`, the screen flips to the same "Check your inbox" pattern as forgot-password's confirmation state
+- **Apple before Google on iOS** — per Apple HIG when both SSOs are offered
+- **Keyboard handling** — wrap each screen in `KeyboardAvoidingView` (same pattern as `app/log-post.tsx`)
+- **Iconography** — Lucide per §11.3: `Mail`, `Lock`, `Eye`/`EyeOff`, `ArrowLeft`, `Apple`, plus an inline Google SVG
+
 ### Screenshots
 
 Refer to the screenshots below as a base for the Home Dashboard Screen design with its different ui states. Important: Your design should be exactly as it appears in the screenshot based on the different ui states:
