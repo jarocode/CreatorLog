@@ -29,7 +29,7 @@ In Progress
 - Migration files numbered sequentially in `supabase/migrations/` (see §10)
 - Env vars (`.env`):
   - `EXPO_PUBLIC_SUPABASE_URL`
-  - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+  - `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `service_role` key only used inside edge functions — never expose to the client
 - Edge functions use `service_role` for admin writes (streak inserts/deletes); mobile client only ever uses `anon` key under RLS
 

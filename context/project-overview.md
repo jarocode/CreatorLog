@@ -1102,7 +1102,7 @@ creatorlog/
 
 # Supabase
 EXPO_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 
 # RevenueCat
 REVENUECAT_APPLE_API_KEY=appl_xxxxx
