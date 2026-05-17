@@ -71,6 +71,13 @@ export default function SettingsScreen() {
     [router],
   );
 
+  const goToOnboarding = useCallback(
+    (route: "platforms" | "goals" | "reminders") => {
+      router.push(`/(onboarding)/${route}`);
+    },
+    [router],
+  );
+
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
       <StatusBar
@@ -195,6 +202,21 @@ export default function SettingsScreen() {
           <DebugLinkRow
             label="Forgot password screen"
             onPress={() => goToAuth("forgot-password")}
+            theme={theme}
+          />
+          <DebugLinkRow
+            label="Onboarding · Platforms"
+            onPress={() => goToOnboarding("platforms")}
+            theme={theme}
+          />
+          <DebugLinkRow
+            label="Onboarding · Weekly goals"
+            onPress={() => goToOnboarding("goals")}
+            theme={theme}
+          />
+          <DebugLinkRow
+            label="Onboarding · Reminders"
+            onPress={() => goToOnboarding("reminders")}
             theme={theme}
             isLast
           />
