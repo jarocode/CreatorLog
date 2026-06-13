@@ -24,20 +24,37 @@ import {
   SocialButton,
 } from '@/components/auth/SocialButton';
 import { Ionicons } from '@expo/vector-icons';
+import { signInWithEmail } from '@/services/auth';
+import { fieldErrors, signInSchema } from '@/types/validation';
 
 export default function SignInScreen() {
   const isDark = useColorScheme() === 'dark';
   const theme = isDark ? AppColors.dark : AppColors.light;
   const router = useRouter();
 
-  const [email, setEmail] = useState('sam@creators.co');
-  const [password, setPassword] = useState('Streak2026!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const handleSignIn = useCallback(() => {
+  const handleSignIn = useCallback(async () => {
+    setFormError(null);
+    const parsed = signInSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      setErrors(fieldErrors(parsed.error));
+      return;
+    }
+    setErrors({});
     setSubmitting(true);
-    setTimeout(() => setSubmitting(false), 600);
-  }, []);
+    const result = await signInWithEmail(parsed.data.email, parsed.data.password);
+    setSubmitting(false);
+    if (!result.success) {
+      setFormError(result.error ?? 'Could not sign in.');
+      return;
+    }
+    // Session lands via onAuthStateChange; the route guard navigates onward.
+  }, [email, password]);
 
   const handleMagicLink = useCallback(() => {}, []);
   const handleApple = useCallback(() => {}, []);
@@ -48,7 +65,6 @@ export default function SignInScreen() {
   const handleSignUp = useCallback(() => {
     router.push('/(auth)/sign-up');
   }, [router]);
-  const handleBack = useCallback(() => router.back(), [router]);
 
   return (
     <SafeAreaView
@@ -59,16 +75,6 @@ export default function SignInScreen() {
         barStyle={isDark ? 'light-content' : 'dark-content'}
         backgroundColor={theme.bg}
       />
-      <View style={styles.topBar}>
-        <TouchableOpacity
-          onPress={handleBack}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          style={styles.backBtn}
-        >
-          <Ionicons name="chevron-back" size={24} color={theme.text} />
-        </TouchableOpacity>
-      </View>
-
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={RNPlatform.OS === 'ios' ? 'padding' : undefined}
@@ -94,6 +100,7 @@ export default function SignInScreen() {
             autoCapitalize="none"
             autoComplete="email"
             placeholder="you@email.com"
+            errorText={errors.email}
           />
 
           <AuthTextField
@@ -102,6 +109,7 @@ export default function SignInScreen() {
             onChangeText={setPassword}
             isPassword
             placeholder="••••••••••"
+            errorText={errors.password}
             rightAdornment={
               <TouchableOpacity
                 onPress={handleForgot}
@@ -111,6 +119,10 @@ export default function SignInScreen() {
               </TouchableOpacity>
             }
           />
+
+          {formError ? (
+            <Text style={styles.formError}>{formError}</Text>
+          ) : null}
 
           <View style={styles.primarySpacer} />
           <PrimaryButton
@@ -165,14 +177,6 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  topBar: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  backBtn: {
-    padding: 4,
-    width: 32,
-  },
   scroll: {
     paddingHorizontal: 20,
     paddingTop: 4,
@@ -195,6 +199,12 @@ const styles = StyleSheet.create({
     color: AppColors.primary,
     fontSize: typography.xs,
     fontWeight: '700',
+  },
+  formError: {
+    color: AppColors.warning,
+    fontSize: typography.sm,
+    textAlign: 'center',
+    marginTop: 4,
   },
   primarySpacer: {
     height: 6,

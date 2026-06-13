@@ -25,22 +25,50 @@ import {
   SocialButton,
 } from '@/components/auth/SocialButton';
 import { PasswordStrengthMeter } from '@/components/auth/PasswordStrengthMeter';
+import { signUpWithEmail } from '@/services/auth';
+import { fieldErrors, signUpSchema } from '@/types/validation';
 
 export default function SignUpScreen() {
   const isDark = useColorScheme() === 'dark';
   const theme = isDark ? AppColors.dark : AppColors.light;
   const router = useRouter();
 
-  const [name, setName] = useState('Sam Adeyemi');
-  const [email, setEmail] = useState('sam@creators.co');
-  const [password, setPassword] = useState('Streak2026!');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const handleBack = useCallback(() => router.back(), [router]);
-  const handleCreateAccount = useCallback(() => {
+  const handleCreateAccount = useCallback(async () => {
+    setFormError(null);
+    setNotice(null);
+    const parsed = signUpSchema.safeParse({ name, email, password });
+    if (!parsed.success) {
+      setErrors(fieldErrors(parsed.error));
+      return;
+    }
+    setErrors({});
     setSubmitting(true);
-    setTimeout(() => setSubmitting(false), 600);
-  }, []);
+    const result = await signUpWithEmail(
+      parsed.data.name,
+      parsed.data.email,
+      parsed.data.password,
+    );
+    setSubmitting(false);
+    if (!result.success) {
+      setFormError(result.error ?? 'Could not create your account.');
+      return;
+    }
+    if (result.data?.needsConfirmation) {
+      // Email confirmation is off on the remote project, but handle it defensively.
+      setNotice('Check your email to confirm your account, then sign in.');
+      return;
+    }
+    // Session lands via onAuthStateChange; the route guard sends new users to onboarding.
+  }, [name, email, password]);
   const handleApple = useCallback(() => {}, []);
   const handleGoogle = useCallback(() => {}, []);
   const handleSignIn = useCallback(() => {
@@ -90,6 +118,7 @@ export default function SignUpScreen() {
             autoCapitalize="words"
             autoComplete="name"
             placeholder='e.g. "Sam Adeyemi"'
+            errorText={errors.name}
           />
 
           <AuthTextField
@@ -100,6 +129,7 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             autoComplete="email"
             placeholder="you@email.com"
+            errorText={errors.email}
           />
 
           <AuthTextField
@@ -108,8 +138,14 @@ export default function SignUpScreen() {
             onChangeText={setPassword}
             isPassword
             placeholder="••••••••••"
+            errorText={errors.password}
           />
           <PasswordStrengthMeter password={password} />
+
+          {formError ? <Text style={styles.formError}>{formError}</Text> : null}
+          {notice ? (
+            <Text style={[styles.notice, { color: theme.textSecondary }]}>{notice}</Text>
+          ) : null}
 
           <PrimaryButton
             label="Create account"
@@ -185,6 +221,17 @@ const styles = StyleSheet.create({
   tagline: {
     fontSize: typography.sm,
     marginTop: 4,
+  },
+  formError: {
+    color: AppColors.warning,
+    fontSize: typography.sm,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  notice: {
+    fontSize: typography.sm,
+    textAlign: 'center',
+    marginBottom: 4,
   },
   socialGap: {
     height: 10,

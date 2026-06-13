@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useSettingsStore } from "@/stores/settingsStore";
+import { useAuthStore } from "@/stores/authStore";
 import { AppColors } from "@/constants/colors";
 import { typography } from "@/constants/typography";
 
@@ -62,21 +62,14 @@ export default function SettingsScreen() {
   const isDark = colorScheme === "dark";
   const theme = isDark ? AppColors.dark : AppColors.light;
   const { toggleTheme } = useSettingsStore();
-  const router = useRouter();
+  const signOut = useAuthStore((s) => s.signOut);
+  const displayName = useAuthStore((s) => s.profile?.display_name);
+  const email = useAuthStore((s) => s.user?.email);
 
-  const goToAuth = useCallback(
-    (route: "sign-in" | "sign-up" | "forgot-password") => {
-      router.push(`/(auth)/${route}`);
-    },
-    [router],
-  );
-
-  const goToOnboarding = useCallback(
-    (route: "platforms" | "goals" | "reminders") => {
-      router.push(`/(onboarding)/${route}`);
-    },
-    [router],
-  );
+  const handleSignOut = useCallback(() => {
+    // The route guard redirects to sign-in once the session clears.
+    signOut();
+  }, [signOut]);
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
@@ -159,8 +152,8 @@ export default function SettingsScreen() {
         <View style={[styles.card, { backgroundColor: theme.bgElevated }]}>
           <SettingRow
             icon="person-outline"
-            label="Account"
-            sublabel="Email, password"
+            label={displayName || "Account"}
+            sublabel={email ?? "Email, password"}
             right={
               <Ionicons
                 name="chevron-forward"
@@ -185,78 +178,20 @@ export default function SettingsScreen() {
             isLast
           />
         </View>
-        <Text style={[styles.sectionLabel, { color: theme.textMuted }]}>
-          DEBUG
-        </Text>
-        <View style={[styles.card, { backgroundColor: theme.bgElevated }]}>
-          <DebugLinkRow
-            label="Sign in screen"
-            onPress={() => goToAuth("sign-in")}
-            theme={theme}
-          />
-          <DebugLinkRow
-            label="Sign up screen"
-            onPress={() => goToAuth("sign-up")}
-            theme={theme}
-          />
-          <DebugLinkRow
-            label="Forgot password screen"
-            onPress={() => goToAuth("forgot-password")}
-            theme={theme}
-          />
-          <DebugLinkRow
-            label="Onboarding · Platforms"
-            onPress={() => goToOnboarding("platforms")}
-            theme={theme}
-          />
-          <DebugLinkRow
-            label="Onboarding · Weekly goals"
-            onPress={() => goToOnboarding("goals")}
-            theme={theme}
-          />
-          <DebugLinkRow
-            label="Onboarding · Reminders"
-            onPress={() => goToOnboarding("reminders")}
-            theme={theme}
-            isLast
-          />
-        </View>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={handleSignOut}
+          style={[styles.card, styles.signOut, { backgroundColor: theme.bgElevated }]}
+        >
+          <Ionicons name="log-out-outline" size={18} color={AppColors.warning} />
+          <Text style={[styles.signOutLabel, { color: AppColors.warning }]}>
+            Sign out
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-interface DebugLinkRowProps {
-  label: string;
-  onPress: () => void;
-  theme: AppTheme;
-  isLast?: boolean;
-}
-
-const DebugLinkRow: React.FC<DebugLinkRowProps> = ({
-  label,
-  onPress,
-  theme,
-  isLast,
-}) => (
-  <TouchableOpacity
-    onPress={onPress}
-    activeOpacity={0.7}
-    style={[
-      styles.row,
-      !isLast && styles.rowBorder,
-      { borderBottomColor: theme.border },
-    ]}
-  >
-    <View style={[styles.rowIcon, { backgroundColor: theme.bgSubtle }]}>
-      <Ionicons name="flask-outline" size={17} color={AppColors.primary} />
-    </View>
-    <View style={styles.rowText}>
-      <Text style={[styles.rowLabel, { color: theme.text }]}>{label}</Text>
-    </View>
-    <Ionicons name="chevron-forward" size={16} color={theme.textMuted} />
-  </TouchableOpacity>
-);
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -323,5 +258,17 @@ const styles = StyleSheet.create({
   rowRight: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  signOut: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 14,
+    marginTop: 12,
+  },
+  signOutLabel: {
+    fontSize: typography.sm,
+    fontWeight: "600",
   },
 });

@@ -1,9 +1,12 @@
+import { useEffect } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuthStore } from '@/stores/authStore';
+import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -11,6 +14,12 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  // Restore the session once on startup, then keep the route in sync with auth.
+  useEffect(() => {
+    useAuthStore.getState().initialize();
+  }, []);
+  useProtectedRoute();
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>

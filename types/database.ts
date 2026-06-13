@@ -47,6 +47,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
+        Relationships: [];
       };
       platform_configs: {
         Row: {
@@ -70,6 +71,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database['public']['Tables']['platform_configs']['Insert']>;
+        Relationships: [];
       };
       post_logs: {
         Row: {
@@ -103,6 +105,7 @@ export interface Database {
           synced?: boolean;
         };
         Update: Partial<Database['public']['Tables']['post_logs']['Insert']>;
+        Relationships: [];
       };
       streaks: {
         Row: {
@@ -130,6 +133,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['streaks']['Insert']>;
+        Relationships: [];
       };
       notification_prefs: {
         Row: {
@@ -155,10 +159,12 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['notification_prefs']['Insert']>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 }

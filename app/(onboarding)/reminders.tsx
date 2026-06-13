@@ -14,6 +14,8 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AppColors } from '@/constants/colors';
 import { typography } from '@/constants/typography';
 import { useOnboardingStore } from '@/stores/onboardingStore';
+import { useAuthStore } from '@/stores/authStore';
+import { completeOnboarding } from '@/services/onboarding';
 
 import { OnboardingHeader } from '@/components/onboarding/OnboardingHeader';
 import { OnboardingCTA } from '@/components/onboarding/OnboardingCTA';
@@ -27,13 +29,18 @@ export default function RemindersScreen() {
 
   const reminders = useOnboardingStore((s) => s.reminders);
   const setReminder = useOnboardingStore((s) => s.setReminder);
+  const selectedPlatforms = useOnboardingStore((s) => s.selectedPlatforms);
+  const weeklyGoals = useOnboardingStore((s) => s.weeklyGoals);
+
+  const userId = useAuthStore((s) => s.user?.id);
+  const refreshProfile = useAuthStore((s) => s.refreshProfile);
 
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleBack = useCallback(() => router.back(), [router]);
 
-  const handleFinish = useCallback(async () => {
-    setSubmitting(true);
+  const requestNotifications = useCallback(async () => {
     try {
       // expo-notifications' native module is unavailable in Expo Go (Android);
       // skip the call there so the UI flow still works during development.
@@ -46,11 +53,42 @@ export default function RemindersScreen() {
       }
     } catch {
       // Non-blocking — user can grant permissions later in Settings.
-    } finally {
-      setSubmitting(false);
-      router.replace('/');
     }
-  }, [router]);
+  }, []);
+
+  const handleFinish = useCallback(async () => {
+    if (!userId) {
+      router.replace('/(auth)/sign-in');
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+    await requestNotifications();
+
+    const result = await completeOnboarding({
+      userId,
+      selectedPlatforms,
+      weeklyGoals,
+      reminders,
+    });
+    if (!result.success) {
+      setSubmitting(false);
+      setError(result.error ?? 'Could not save your setup. Please try again.');
+      return;
+    }
+
+    await refreshProfile(); // flips onboarding_completed in the store
+    setSubmitting(false);
+    router.replace('/(tabs)');
+  }, [
+    userId,
+    requestNotifications,
+    selectedPlatforms,
+    weeklyGoals,
+    reminders,
+    refreshProfile,
+    router,
+  ]);
 
   return (
     <SafeAreaView
@@ -118,6 +156,7 @@ export default function RemindersScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
         <OnboardingCTA
           label="Let's go!"
           leadingIcon="flame"
@@ -174,6 +213,11 @@ const styles = StyleSheet.create({
   },
   footerHelp: {
     fontSize: typography.xs,
+    textAlign: 'center',
+  },
+  error: {
+    color: AppColors.warning,
+    fontSize: typography.sm,
     textAlign: 'center',
   },
 });
