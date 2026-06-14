@@ -43,32 +43,47 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: false,
 
   initialize: () => {
+    // Memoized so this runs (and subscribes to onAuthStateChange) exactly once.
     if (initPromise) return initPromise;
 
     initPromise = (async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = data.session;
-      const profile = session ? await fetchProfile(session.user.id) : null;
-      set({
-        session,
-        user: session?.user ?? null,
-        profile,
-        isAuthenticated: !!session,
-        initializing: false,
-      });
-
-      // Keep store in sync with sign-in/out/token refresh.
-      supabase.auth.onAuthStateChange(async (_event, nextSession) => {
-        const nextProfile = nextSession
-          ? await fetchProfile(nextSession.user.id)
-          : null;
+      try {
+        const { data } = await supabase.auth.getSession();
+        const session = data.session;
+        const profile = session ? await fetchProfile(session.user.id) : null;
         set({
-          session: nextSession,
-          user: nextSession?.user ?? null,
-          profile: nextProfile,
-          isAuthenticated: !!nextSession,
+          session,
+          user: session?.user ?? null,
+          profile,
+          isAuthenticated: !!session,
+          initializing: false,
         });
-      });
+
+        // Keep store in sync with sign-in/out/token refresh.
+        supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+          const nextProfile = nextSession
+            ? await fetchProfile(nextSession.user.id)
+            : null;
+          set({
+            session: nextSession,
+            user: nextSession?.user ?? null,
+            profile: nextProfile,
+            isAuthenticated: !!nextSession,
+          });
+        });
+      } catch {
+        // Restore failed (e.g. SecureStore read error). Treat as signed-out so
+        // the app routes to auth instead of hanging on the splash, and clear
+        // the memo so a later initialize() can retry.
+        initPromise = null;
+        set({
+          session: null,
+          user: null,
+          profile: null,
+          isAuthenticated: false,
+          initializing: false,
+        });
+      }
     })();
 
     return initPromise;
