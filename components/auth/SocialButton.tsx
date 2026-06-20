@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AppColors } from '@/constants/colors';
@@ -12,6 +18,7 @@ interface SocialButtonProps {
   variant?: SocialVariant;
   icon?: React.ReactNode;
   onPress: () => void;
+  loading?: boolean;
 }
 
 export const SocialButton: React.FC<SocialButtonProps> = ({
@@ -19,6 +26,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
   variant = 'outlined',
   icon,
   onPress,
+  loading = false,
 }) => {
   const isDark = useColorScheme() === 'dark';
   const theme = isDark ? AppColors.dark : AppColors.light;
@@ -41,12 +49,19 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
 
   return (
     <TouchableOpacity
-      style={[styles.button, containerStyle]}
+      style={[styles.button, containerStyle, loading && styles.loading]}
       onPress={onPress}
       activeOpacity={0.8}
+      disabled={loading}
     >
-      <View style={styles.iconWrap}>{icon}</View>
-      <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
+      {loading ? (
+        <ActivityIndicator size="small" color={labelColor} />
+      ) : (
+        <>
+          <View style={styles.iconWrap}>{icon}</View>
+          <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
+        </>
+      )}
     </TouchableOpacity>
   );
 };
@@ -92,6 +107,9 @@ const styles = StyleSheet.create({
   },
   outlined: {
     borderWidth: 1,
+  },
+  loading: {
+    opacity: 0.7,
   },
   solid: {
     backgroundColor: '#000000',

@@ -17,6 +17,8 @@ import { AppColors, type ThemeColors } from '@/constants/colors';
 import { typography } from '@/constants/typography';
 import { AuthTextField } from '@/components/auth/AuthTextField';
 import { PrimaryButton } from '@/components/auth/PrimaryButton';
+import { sendPasswordReset } from '@/services/auth';
+import { emailSchema } from '@/types/validation';
 
 type ScreenState = 'request' | 'sent';
 
@@ -26,22 +28,34 @@ export default function ForgotPasswordScreen() {
   const router = useRouter();
 
   const [state, setState] = useState<ScreenState>('request');
-  const [email, setEmail] = useState('sam@creators.co');
+  const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const handleBack = useCallback(() => router.back(), [router]);
 
-  const handleSend = useCallback(() => {
+  const handleSend = useCallback(async () => {
+    setError(undefined);
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? 'Enter a valid email address');
+      return;
+    }
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setState('sent');
-    }, 600);
-  }, []);
+    const result = await sendPasswordReset(parsed.data);
+    setSubmitting(false);
+    if (!result.success) {
+      setError(result.error ?? 'Could not send the reset link.');
+      return;
+    }
+    setState('sent');
+  }, [email]);
 
-  const handleResend = useCallback(() => {
-    setState('request');
-  }, []);
+  const handleResend = useCallback(async () => {
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) return;
+    await sendPasswordReset(parsed.data);
+  }, [email]);
 
   const handleBackToSignIn = useCallback(() => {
     router.replace('/(auth)/sign-in');
@@ -86,6 +100,7 @@ export default function ForgotPasswordScreen() {
               onSend={handleSend}
               onSignIn={handleSignInLink}
               submitting={submitting}
+              error={error}
               theme={theme}
             />
           ) : (
@@ -109,6 +124,7 @@ interface RequestStateProps {
   onSend: () => void;
   onSignIn: () => void;
   submitting: boolean;
+  error?: string;
   theme: ThemeColors;
 }
 
@@ -118,6 +134,7 @@ const RequestState: React.FC<RequestStateProps> = ({
   onSend,
   onSignIn,
   submitting,
+  error,
   theme,
 }) => (
   <View>
@@ -140,6 +157,7 @@ const RequestState: React.FC<RequestStateProps> = ({
       autoCapitalize="none"
       autoComplete="email"
       placeholder="you@email.com"
+      errorText={error}
     />
 
     <View style={styles.spacer8} />

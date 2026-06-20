@@ -24,8 +24,19 @@ export const signUpSchema = z.object({
   password: passwordSchema,
 });
 
+export const resetPasswordSchema = z
+  .object({
+    password: passwordSchema,
+    confirm: z.string().min(1, 'Please confirm your password'),
+  })
+  .refine((v) => v.password === v.confirm, {
+    path: ['confirm'],
+    message: 'Passwords do not match',
+  });
+
 export type SignInInput = z.infer<typeof signInSchema>;
 export type SignUpInput = z.infer<typeof signUpSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
 /**
  * Flattens a ZodError into `{ field: message }` for inline form errors,

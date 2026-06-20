@@ -24,8 +24,8 @@ import {
   SocialButton,
 } from '@/components/auth/SocialButton';
 import { Ionicons } from '@expo/vector-icons';
-import { signInWithEmail } from '@/services/auth';
-import { fieldErrors, signInSchema } from '@/types/validation';
+import { sendMagicLink, signInWithEmail } from '@/services/auth';
+import { emailSchema, fieldErrors, signInSchema } from '@/types/validation';
 
 export default function SignInScreen() {
   const isDark = useColorScheme() === 'dark';
@@ -37,6 +37,8 @@ export default function SignInScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
+  const [magicSubmitting, setMagicSubmitting] = useState(false);
+  const [magicSent, setMagicSent] = useState(false);
 
   const handleSignIn = useCallback(async () => {
     setFormError(null);
@@ -56,7 +58,28 @@ export default function SignInScreen() {
     // Session lands via onAuthStateChange; the route guard navigates onward.
   }, [email, password]);
 
-  const handleMagicLink = useCallback(() => {}, []);
+  const handleMagicLink = useCallback(async () => {
+    setFormError(null);
+    const parsed = emailSchema.safeParse(email);
+    if (!parsed.success) {
+      setErrors({ email: parsed.error.issues[0]?.message ?? 'Enter a valid email' });
+      return;
+    }
+    setErrors({});
+    setMagicSubmitting(true);
+    const result = await sendMagicLink(parsed.data);
+    setMagicSubmitting(false);
+    if (!result.success) {
+      setFormError(result.error ?? 'Could not send the magic link.');
+      return;
+    }
+    setMagicSent(true);
+  }, [email]);
+
+  const handleUseDifferentEmail = useCallback(() => {
+    setMagicSent(false);
+    setFormError(null);
+  }, []);
   const handleApple = useCallback(() => {}, []);
   const handleGoogle = useCallback(() => {}, []);
   const handleForgot = useCallback(() => {
@@ -92,78 +115,109 @@ export default function SignInScreen() {
             </Text>
           </View>
 
-          <AuthTextField
-            label="EMAIL"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            placeholder="you@email.com"
-            errorText={errors.email}
-          />
+          {magicSent ? (
+            <View>
+              <View style={styles.magicNotice}>
+                <View
+                  style={[
+                    styles.magicIcon,
+                    { backgroundColor: AppColors.success + '22' },
+                  ]}
+                >
+                  <Ionicons name="mail-outline" size={28} color={AppColors.success} />
+                </View>
+                <Text style={[styles.magicTitle, { color: theme.text }]}>
+                  Check your inbox
+                </Text>
+                <Text style={[styles.magicSubtitle, { color: theme.textSecondary }]}>
+                  We sent a magic link to{' '}
+                  <Text style={{ color: theme.text, fontWeight: '700' }}>{email}</Text>
+                  . Tap it to sign in.
+                </Text>
+              </View>
+              <View style={styles.footer}>
+                <TouchableOpacity onPress={handleUseDifferentEmail}>
+                  <Text style={styles.footerLink}>Use a different email ›</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <>
+              <AuthTextField
+                label="EMAIL"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                placeholder="you@email.com"
+                errorText={errors.email}
+              />
 
-          <AuthTextField
-            label="PASSWORD"
-            value={password}
-            onChangeText={setPassword}
-            isPassword
-            placeholder="••••••••••"
-            errorText={errors.password}
-            rightAdornment={
-              <TouchableOpacity
-                onPress={handleForgot}
-                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-              >
-                <Text style={styles.forgot}>Forgot? ›</Text>
-              </TouchableOpacity>
-            }
-          />
+              <AuthTextField
+                label="PASSWORD"
+                value={password}
+                onChangeText={setPassword}
+                isPassword
+                placeholder="••••••••••"
+                errorText={errors.password}
+                rightAdornment={
+                  <TouchableOpacity
+                    onPress={handleForgot}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.forgot}>Forgot? ›</Text>
+                  </TouchableOpacity>
+                }
+              />
 
-          {formError ? (
-            <Text style={styles.formError}>{formError}</Text>
-          ) : null}
+              {formError ? (
+                <Text style={styles.formError}>{formError}</Text>
+              ) : null}
 
-          <View style={styles.primarySpacer} />
-          <PrimaryButton
-            label="Sign in"
-            onPress={handleSignIn}
-            loading={submitting}
-          />
+              <View style={styles.primarySpacer} />
+              <PrimaryButton
+                label="Sign in"
+                onPress={handleSignIn}
+                loading={submitting}
+              />
 
-          <AuthDivider />
+              <AuthDivider />
 
-          <SocialButton
-            label="Email me a magic link"
-            variant="outlined"
-            icon={
-              <Ionicons name="mail-outline" size={18} color={theme.text} />
-            }
-            onPress={handleMagicLink}
-          />
-          <View style={styles.socialGap} />
-          <SocialButton
-            label="Continue with Apple"
-            variant={isDark ? 'white' : 'solid-dark'}
-            icon={<AppleMark color={isDark ? '#000000' : '#FFFFFF'} />}
-            onPress={handleApple}
-          />
-          <View style={styles.socialGap} />
-          <SocialButton
-            label="Continue with Google"
-            variant={isDark ? 'white' : 'outlined'}
-            icon={<GoogleMark />}
-            onPress={handleGoogle}
-          />
+              <SocialButton
+                label="Email me a magic link"
+                variant="outlined"
+                loading={magicSubmitting}
+                icon={
+                  <Ionicons name="mail-outline" size={18} color={theme.text} />
+                }
+                onPress={handleMagicLink}
+              />
+              <View style={styles.socialGap} />
+              <SocialButton
+                label="Continue with Apple"
+                variant={isDark ? 'white' : 'solid-dark'}
+                icon={<AppleMark color={isDark ? '#000000' : '#FFFFFF'} />}
+                onPress={handleApple}
+              />
+              <View style={styles.socialGap} />
+              <SocialButton
+                label="Continue with Google"
+                variant={isDark ? 'white' : 'outlined'}
+                icon={<GoogleMark />}
+                onPress={handleGoogle}
+              />
 
-          <View style={styles.footer}>
-            <Text style={[styles.footerText, { color: theme.textSecondary }]}>
-              Don&apos;t have an account?{' '}
-            </Text>
-            <TouchableOpacity onPress={handleSignUp}>
-              <Text style={styles.footerLink}>Sign up ›</Text>
-            </TouchableOpacity>
-          </View>
+              <View style={styles.footer}>
+                <Text style={[styles.footerText, { color: theme.textSecondary }]}>
+                  Don&apos;t have an account?{' '}
+                </Text>
+                <TouchableOpacity onPress={handleSignUp}>
+                  <Text style={styles.footerLink}>Sign up ›</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -205,6 +259,30 @@ const styles = StyleSheet.create({
     fontSize: typography.sm,
     textAlign: 'center',
     marginTop: 4,
+  },
+  magicNotice: {
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  magicIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  magicTitle: {
+    fontSize: typography.xl,
+    fontWeight: '700',
+    marginTop: 14,
+  },
+  magicSubtitle: {
+    fontSize: typography.sm,
+    textAlign: 'center',
+    marginTop: 8,
+    lineHeight: 20,
+    paddingHorizontal: 8,
   },
   primarySpacer: {
     height: 6,
