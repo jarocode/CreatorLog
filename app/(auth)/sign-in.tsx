@@ -24,8 +24,15 @@ import {
   SocialButton,
 } from '@/components/auth/SocialButton';
 import { Ionicons } from '@expo/vector-icons';
-import { sendMagicLink, signInWithEmail } from '@/services/auth';
+import {
+  sendMagicLink,
+  signInWithApple,
+  signInWithEmail,
+  signInWithGoogle,
+} from '@/services/auth';
 import { emailSchema, fieldErrors, signInSchema } from '@/types/validation';
+
+const isIOS = RNPlatform.OS === 'ios';
 
 export default function SignInScreen() {
   const isDark = useColorScheme() === 'dark';
@@ -39,6 +46,8 @@ export default function SignInScreen() {
   const [formError, setFormError] = useState<string | null>(null);
   const [magicSubmitting, setMagicSubmitting] = useState(false);
   const [magicSent, setMagicSent] = useState(false);
+  const [appleSubmitting, setAppleSubmitting] = useState(false);
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   const handleSignIn = useCallback(async () => {
     setFormError(null);
@@ -80,8 +89,28 @@ export default function SignInScreen() {
     setMagicSent(false);
     setFormError(null);
   }, []);
-  const handleApple = useCallback(() => {}, []);
-  const handleGoogle = useCallback(() => {}, []);
+  const handleApple = useCallback(async () => {
+    setFormError(null);
+    setAppleSubmitting(true);
+    const result = await signInWithApple();
+    setAppleSubmitting(false);
+    if (!result.success && !result.cancelled) {
+      setFormError(result.error ?? 'Could not sign in with Apple.');
+    }
+    // Session lands via onAuthStateChange; the route guard navigates onward.
+  }, []);
+
+  const handleGoogle = useCallback(async () => {
+    setFormError(null);
+    setGoogleSubmitting(true);
+    const result = await signInWithGoogle();
+    setGoogleSubmitting(false);
+    if (!result.success && !result.cancelled) {
+      setFormError(result.error ?? 'Could not sign in with Google.');
+    }
+    // Session lands via onAuthStateChange; the route guard navigates onward.
+  }, []);
+
   const handleForgot = useCallback(() => {
     router.push('/(auth)/forgot-password');
   }, [router]);
@@ -193,17 +222,23 @@ export default function SignInScreen() {
                 }
                 onPress={handleMagicLink}
               />
-              <View style={styles.socialGap} />
-              <SocialButton
-                label="Continue with Apple"
-                variant={isDark ? 'white' : 'solid-dark'}
-                icon={<AppleMark color={isDark ? '#000000' : '#FFFFFF'} />}
-                onPress={handleApple}
-              />
+              {isIOS ? (
+                <>
+                  <View style={styles.socialGap} />
+                  <SocialButton
+                    label="Continue with Apple"
+                    variant={isDark ? 'white' : 'solid-dark'}
+                    loading={appleSubmitting}
+                    icon={<AppleMark color={isDark ? '#000000' : '#FFFFFF'} />}
+                    onPress={handleApple}
+                  />
+                </>
+              ) : null}
               <View style={styles.socialGap} />
               <SocialButton
                 label="Continue with Google"
                 variant={isDark ? 'white' : 'outlined'}
+                loading={googleSubmitting}
                 icon={<GoogleMark />}
                 onPress={handleGoogle}
               />

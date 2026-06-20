@@ -25,8 +25,10 @@ import {
   SocialButton,
 } from '@/components/auth/SocialButton';
 import { PasswordStrengthMeter } from '@/components/auth/PasswordStrengthMeter';
-import { signUpWithEmail } from '@/services/auth';
+import { signInWithApple, signInWithGoogle, signUpWithEmail } from '@/services/auth';
 import { fieldErrors, signUpSchema } from '@/types/validation';
+
+const isIOS = RNPlatform.OS === 'ios';
 
 export default function SignUpScreen() {
   const isDark = useColorScheme() === 'dark';
@@ -40,6 +42,8 @@ export default function SignUpScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [appleSubmitting, setAppleSubmitting] = useState(false);
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   const handleBack = useCallback(() => router.back(), [router]);
   const handleCreateAccount = useCallback(async () => {
@@ -69,8 +73,28 @@ export default function SignUpScreen() {
     }
     // Session lands via onAuthStateChange; the route guard sends new users to onboarding.
   }, [name, email, password]);
-  const handleApple = useCallback(() => {}, []);
-  const handleGoogle = useCallback(() => {}, []);
+  const handleApple = useCallback(async () => {
+    setFormError(null);
+    setAppleSubmitting(true);
+    const result = await signInWithApple();
+    setAppleSubmitting(false);
+    if (!result.success && !result.cancelled) {
+      setFormError(result.error ?? 'Could not sign in with Apple.');
+    }
+    // Session lands via onAuthStateChange; the guard sends new users to onboarding.
+  }, []);
+
+  const handleGoogle = useCallback(async () => {
+    setFormError(null);
+    setGoogleSubmitting(true);
+    const result = await signInWithGoogle();
+    setGoogleSubmitting(false);
+    if (!result.success && !result.cancelled) {
+      setFormError(result.error ?? 'Could not sign in with Google.');
+    }
+    // Session lands via onAuthStateChange; the guard sends new users to onboarding.
+  }, []);
+
   const handleSignIn = useCallback(() => {
     router.replace('/(auth)/sign-in');
   }, [router]);
@@ -155,16 +179,22 @@ export default function SignUpScreen() {
 
           <AuthDivider />
 
-          <SocialButton
-            label="Continue with Apple"
-            variant={isDark ? 'white' : 'solid-dark'}
-            icon={<AppleMark color={isDark ? '#000000' : '#FFFFFF'} />}
-            onPress={handleApple}
-          />
-          <View style={styles.socialGap} />
+          {isIOS ? (
+            <>
+              <SocialButton
+                label="Continue with Apple"
+                variant={isDark ? 'white' : 'solid-dark'}
+                loading={appleSubmitting}
+                icon={<AppleMark color={isDark ? '#000000' : '#FFFFFF'} />}
+                onPress={handleApple}
+              />
+              <View style={styles.socialGap} />
+            </>
+          ) : null}
           <SocialButton
             label="Continue with Google"
             variant={isDark ? 'white' : 'outlined'}
+            loading={googleSubmitting}
             icon={<GoogleMark />}
             onPress={handleGoogle}
           />
