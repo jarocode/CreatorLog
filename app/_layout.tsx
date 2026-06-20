@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/stores/authStore';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
+import { useAuthDeepLinks } from '@/services/authLinking';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -20,6 +21,7 @@ export default function RootLayout() {
     useAuthStore.getState().initialize();
   }, []);
   useProtectedRoute();
+  useAuthDeepLinks();
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -28,6 +30,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
+        <Stack.Screen name="auth-callback" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         <Stack.Screen name="log-post" options={{ headerShown: false }} />
       </Stack>

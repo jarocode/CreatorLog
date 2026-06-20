@@ -14,10 +14,17 @@ interface AuthState {
   /** True until the initial session restore + profile fetch completes. */
   initializing: boolean;
   isAuthenticated: boolean;
+  /**
+   * True while a password-reset deep link is being handled. The route guard
+   * leaves the user on the reset-password screen (instead of routing them into
+   * the app) even though a recovery session now exists.
+   */
+  passwordRecovery: boolean;
 
   initialize: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
+  setPasswordRecovery: (active: boolean) => void;
 }
 
 async function fetchProfile(userId: string): Promise<Profile | null> {
@@ -41,6 +48,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   profile: null,
   initializing: true,
   isAuthenticated: false,
+  passwordRecovery: false,
 
   initialize: () => {
     // Memoized so this runs (and subscribes to onAuthStateChange) exactly once.
@@ -60,7 +68,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
 
         // Keep store in sync with sign-in/out/token refresh.
-        supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+        supabase.auth.onAuthStateChange(async (event, nextSession) => {
           const nextProfile = nextSession
             ? await fetchProfile(nextSession.user.id)
             : null;
@@ -69,6 +77,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             user: nextSession?.user ?? null,
             profile: nextProfile,
             isAuthenticated: !!nextSession,
+            // Flag recovery so the guard keeps the user on reset-password.
+            ...(event === 'PASSWORD_RECOVERY' ? { passwordRecovery: true } : {}),
           });
         });
       } catch {
@@ -99,6 +109,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signOut: async () => {
     await authSignOut();
     // onAuthStateChange will clear the session; clear eagerly for snappy UI.
-    set({ session: null, user: null, profile: null, isAuthenticated: false });
+    set({
+      session: null,
+      user: null,
+      profile: null,
+      isAuthenticated: false,
+      passwordRecovery: false,
+    });
   },
+
+  setPasswordRecovery: (active) => set({ passwordRecovery: active }),
 }));

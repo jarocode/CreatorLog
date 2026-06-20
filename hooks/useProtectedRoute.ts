@@ -16,9 +16,14 @@ export function useProtectedRoute(): void {
   const session = useAuthStore((s) => s.session);
   const profile = useAuthStore((s) => s.profile);
   const initializing = useAuthStore((s) => s.initializing);
+  const passwordRecovery = useAuthStore((s) => s.passwordRecovery);
 
   useEffect(() => {
     if (initializing) return;
+
+    // During a password-reset deep link a recovery session exists, but the user
+    // must stay on reset-password until they set a new password.
+    if (passwordRecovery) return;
 
     const group = segments[0]; // undefined on splash, else '(auth)' | '(onboarding)' | '(tabs)'
     if (group === undefined) return;
@@ -37,5 +42,5 @@ export function useProtectedRoute(): void {
       // Fully onboarded — keep out of auth/onboarding.
       router.replace('/(tabs)');
     }
-  }, [session, profile, initializing, segments, router]);
+  }, [session, profile, initializing, passwordRecovery, segments, router]);
 }
