@@ -8,6 +8,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/stores/authStore';
 import { useProtectedRoute } from '@/hooks/useProtectedRoute';
 import { useAuthDeepLinks } from '@/services/authLinking';
+import { configureGoogleSignin } from '@/services/auth';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -19,6 +20,7 @@ export default function RootLayout() {
   // Restore the session once on startup, then keep the route in sync with auth.
   useEffect(() => {
     useAuthStore.getState().initialize();
+    configureGoogleSignin();
   }, []);
   useProtectedRoute();
   useAuthDeepLinks();
